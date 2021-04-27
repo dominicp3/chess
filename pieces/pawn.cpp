@@ -62,5 +62,42 @@ std::vector<std::pair<int, int>> Pawn::legal_moves(Board &board)
                 }
         }
 
+ //     En Passant
+        if (m_colour == 'w') {
+                if (m_y == 4) {
+                        if (m_x + 1 < 8 and board[m_x+1][4] != nullptr
+                                        and board[m_x+1][4]->type() == 'p'
+                                        and board[m_x+1][4]->colour() == 'b'
+                                        and board[m_x+1][4]->get_aux()) {
+                                moves.push_back({x + 1, y + 1});
+                        }
+
+                        if (m_x - 1 >= 0 and board[m_x-1][4] != nullptr
+                                        and board[m_x-1][4]->type() == 'p'
+                                        and board[m_x-1][4]->colour() == 'b'
+                                        and board[m_x-1][4]->get_aux()) {
+                                moves.push_back({x - 1, y + 1});
+                        }
+                }
+        }
+
+        if (m_colour == 'b') {
+                if (m_y == 3) {
+                        if (m_x + 1 < 8 and board[m_x+1][3] != nullptr
+                                        and board[m_x+1][3]->type() == 'p'
+                                        and board[m_x+1][3]->colour() == 'w'
+                                        and board[m_x+1][3]->get_aux()) {
+                                moves.push_back({x + 1, y - 1});
+                        }
+
+                        if (m_x - 1 >= 0 and board[m_x-1][3] != nullptr
+                                        and board[m_x-1][3]->type() == 'p'
+                                        and board[m_x-1][3]->colour() == 'w'
+                                        and board[m_x-1][3]->get_aux()) {
+                                moves.push_back({x - 1, y - 1});
+                        }
+                }
+        }
+
         return moves;
 }

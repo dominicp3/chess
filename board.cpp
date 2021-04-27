@@ -199,6 +199,21 @@ void Board::move_piece(int old_x, int old_y, int new_x, int new_y)
                 m_board[new_x][new_y]->set_position(-1, -1);
         }
 
+//      EN PASSANT
+        if (m_board[old_x][old_y]->type() == 'p') {
+                if ((new_x - old_x == 1 or new_x - old_x == -1) and m_board[new_x][new_y] == nullptr) {
+                        if (m_board[old_x][old_y]->colour() == 'w') {
+                                m_board[new_x][new_y - 1]->set_position(-1, -1);
+                                m_board[new_x][new_y - 1] = nullptr;
+                        }
+
+                        if (m_board[old_x][old_y]->colour() == 'b') {
+                                m_board[new_x][new_y + 1]->set_position(-1, -1);
+                                m_board[new_x][new_y + 1] = nullptr;
+                        }
+                }
+        }
+
         m_board[new_x][new_y] = m_board[old_x][old_y];
         m_board[old_x][old_y] = nullptr;
         m_board[new_x][new_y]->set_position(new_x, new_y);
@@ -207,6 +222,35 @@ void Board::move_piece(int old_x, int old_y, int new_x, int new_y)
         if (m_board[new_x][new_y]->type() == 'p' and (new_y == 7 or new_y == 0)) {
                 m_board[new_x][new_y]->set_position(-1, -1);
                 add_piece(new Queen(m_board[new_x][new_y]->colour(), new_x, new_y));
+        }
+
+        if (m_board[new_x][new_y]->type() == 'r' or m_board[new_x][new_y]->type() == 'k') {
+                m_board[new_x][new_y]->set_aux();
+        }
+
+        if (m_board[new_x][new_y]->type() == 'p') {
+                if (old_y == 1 and new_y == 3) {
+                        m_board[new_x][new_y]->set_aux();
+                }
+
+                if (old_y == 6 and new_y == 4) {
+                        m_board[new_x][new_y]->set_aux();
+                }
+        }
+
+//      CASTLING
+        if (m_board[new_x][new_y]->type() == 'k' and old_x == 4) {
+                if (new_x == 2) {
+                        m_board[3][new_y] = m_board[0][new_y];
+                        m_board[0][new_y] = nullptr;
+                        m_board[3][new_y]->set_position(3, new_y);
+                }
+
+                if (new_x == 6) {
+                        m_board[5][new_y] = m_board[7][new_y];
+                        m_board[7][new_y] = nullptr;
+                        m_board[5][new_y]->set_position(5, new_y);
+                }
         }
 }
 
