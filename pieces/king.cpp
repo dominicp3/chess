@@ -88,7 +88,7 @@ std::vector<std::pair<int, int>> King::legal_moves(Board &board)
         if (m_colour == 'w') {
                 if (!m_aux) {
                         if (board[0][0] != nullptr and board[0][0]->type() == 'r' and !board[0][0]->get_aux()) {
-                                if (board[1][0] == nullptr and board[2][0] == nullptr and board[3][0] == nullptr) {
+                                if (board[1][0] == nullptr and board[2][0] == nullptr and board[3][0] == nullptr and board.check() == 0) {
                                         Board knight_sq = board;
                                         Board bishop_sq = board;
                                         Board queen_sq = board;
@@ -105,7 +105,7 @@ std::vector<std::pair<int, int>> King::legal_moves(Board &board)
 
 
                         if (board[7][0] != nullptr and board[7][0]->type() == 'r' and !board[7][0]->get_aux()) {
-                                if (board[5][0] == nullptr and board[6][0] == nullptr) {
+                                if (board[5][0] == nullptr and board[6][0] == nullptr and board.check() == 0) {
                                         Board bishop_sq = board;
                                         Board knight_sq = board;
 
