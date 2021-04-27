@@ -16,9 +16,9 @@ public:
         void set_position(int x, int y);
         int x();
         int y();
-        void render(QPainter &paint);
+        void render(QPainter& paint);
 
-        virtual std::vector<std::pair<int, int>> legal_moves(Board &board) = 0;
+        virtual std::vector<std::pair<int, int>> legal_moves(Board& board) = 0;
         char colour() {return m_colour;}
         char type() {return m_type;}
         bool is_valid_coord() {return 0 <= m_x and m_x < 8 and 0 <= m_y and m_y < 8;}

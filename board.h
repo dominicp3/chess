@@ -9,28 +9,40 @@ class Piece;
 class Board
 {
 public:
-        Board(std::vector<Piece*> white, std::vector<Piece*> black);
-        ~Board();
-
+        Board(const std::list<std::shared_ptr<Piece>>& white = {}, const std::list<std::shared_ptr<Piece>>& black = {});
         Board(const Board& b);
 
-        char check();
-        void move_piece(int old_x, int old_y, int new_x, int new_y);
+        /*
+         * returns:
+         *      'w' if white is in check/checkmate
+         *      'b' if black is in check/checkmate
+         *       0  otherwise
+         */
+        bool check(char player);
+        bool checkmate(char player);
+
         int evaluate();
-        void render(QPainter &paint);
-        void add_piece(Piece *p);
 
-//        std::vector<std::vector<Piece*>> get_board() {return m_board;}
+        void move_piece(int old_x, int old_y, int new_x, int new_y);
+        void render(QPainter& paint);
+        void add_piece(std::shared_ptr<Piece> p);
+        void remove_piece(int x, int y);
 
-        std::vector<Piece*>& operator[](int index);
+        std::vector<std::pair<int, int>> legal_moves(int x, int y);
+
+        std::list<std::shared_ptr<Piece>>& get_white_pieces() {return m_white_pieces;}
+        std::list<std::shared_ptr<Piece>>& get_black_pieces() {return m_black_pieces;}
+        void print_board();
+
+        std::vector<std::shared_ptr<Piece>>& operator[](int index);
 private:
-        void setup_board(std::vector<Piece*> white, std::vector<Piece*> black);
+        void setup_board(std::list<std::shared_ptr<Piece>> white, std::list<std::shared_ptr<Piece>> black);
 
-        std::vector<std::vector<Piece*>> m_board;
+        std::vector<std::vector<std::shared_ptr<Piece>>> m_board;
 
-        std::vector<Piece*> m_white_pieces;
-        std::vector<Piece*> m_black_pieces;
+        std::list<std::shared_ptr<Piece>> m_white_pieces;
+        std::list<std::shared_ptr<Piece>> m_black_pieces;
 
-        Piece* m_white_king;
-        Piece* m_black_king;
+        std::shared_ptr<Piece> m_white_king;
+        std::shared_ptr<Piece> m_black_king;
 };

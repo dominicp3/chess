@@ -88,7 +88,7 @@ std::vector<std::pair<int, int>> King::legal_moves(Board &board)
         if (m_colour == 'w') {
                 if (!m_aux) {
                         if (board[0][0] != nullptr and board[0][0]->type() == 'r' and !board[0][0]->get_aux()) {
-                                if (board[1][0] == nullptr and board[2][0] == nullptr and board[3][0] == nullptr and board.check() == 0) {
+                                if (board[1][0] == nullptr and board[2][0] == nullptr and board[3][0] == nullptr and board.check('w') == 0) {
                                         Board knight_sq = board;
                                         Board bishop_sq = board;
                                         Board queen_sq = board;
@@ -97,15 +97,14 @@ std::vector<std::pair<int, int>> King::legal_moves(Board &board)
                                         bishop_sq.move_piece(4, 0, 1, 0);
                                         queen_sq.move_piece(4, 0, 1, 0);
 
-                                        if (knight_sq.check() == 0 and bishop_sq.check() == 0 and queen_sq.check() == 0) {
+                                        if (knight_sq.check('w') == 0 and bishop_sq.check('w') == 0 and queen_sq.check('w') == 0) {
                                                 moves.push_back({2, 0});
                                         }
                                 }
                         }
 
-
                         if (board[7][0] != nullptr and board[7][0]->type() == 'r' and !board[7][0]->get_aux()) {
-                                if (board[5][0] == nullptr and board[6][0] == nullptr and board.check() == 0) {
+                                if (board[5][0] == nullptr and board[6][0] == nullptr and board.check('w') == 0) {
                                         Board bishop_sq = board;
                                         Board knight_sq = board;
 
@@ -113,7 +112,7 @@ std::vector<std::pair<int, int>> King::legal_moves(Board &board)
                                         knight_sq.move_piece(4, 0, 6, 0);
 
 
-                                        if (knight_sq.check() == 0 and bishop_sq.check() == 0) {
+                                        if (knight_sq.check('w') == 0 and bishop_sq.check('w') == 0) {
                                                 moves.push_back({6, 0});
                                         }
                                 }
@@ -133,7 +132,7 @@ std::vector<std::pair<int, int>> King::legal_moves(Board &board)
                                         bishop_sq.move_piece(4, 7, 1, 7);
                                         queen_sq.move_piece(4, 7, 1, 7);
 
-                                        if (knight_sq.check() == 0 and bishop_sq.check() == 0 and queen_sq.check() == 0) {
+                                        if (knight_sq.check('b') == 0 and bishop_sq.check('b') == 0 and queen_sq.check('b') == 0) {
                                                 moves.push_back({2, 7});
                                         }
                                 }
@@ -149,7 +148,7 @@ std::vector<std::pair<int, int>> King::legal_moves(Board &board)
                                         knight_sq.move_piece(4, 7, 6, 7);
 
 
-                                        if (knight_sq.check() == 0 and bishop_sq.check() == 0) {
+                                        if (knight_sq.check('b') == 0 and bishop_sq.check('b') == 0) {
                                                 moves.push_back({6, 7});
                                         }
                                 }

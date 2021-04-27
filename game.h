@@ -7,19 +7,24 @@
 #include "pieces/pawn.h"
 #include "pieces/queen.h"
 #include "pieces/rook.h"
+#include <limits>
 #include <QPainter>
+#include <algorithm>
+#include <memory>
 
 class Game
 {
 public:
-        Game(char colourTurn = 'w');
-        void playGame(); // empty function
-        void render(QPainter &paint);
+        Game();
+        void render(QPainter& paint);
         void select_square(int x, int y);
-        std::vector<std::pair<int, int>> legal_moves(int x, int y);
+
+        std::vector<std::shared_ptr<Board>> actions(Board& board, char player);
+        void next_move();
+        int minimax(std::shared_ptr<Board> node, int depth, int alpha, int beta, char player);
 private:
         Board m_board;
-        char m_colour_to_play;
+        char m_colour_to_play = 'w';
 
         // currently selected square (mouse input)
         int m_x;
