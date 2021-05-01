@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DIALOG_H
+#define DIALOG_H
 
 #include <QDialog>
 #include <QPainter>
@@ -6,19 +7,19 @@
 #include <QPixmap>
 #include <QMouseEvent>
 #include <QDir>
-#include "board.h"
+#include "gamestate.h"
 #include "game.h"
 
-namespace Ui {
-class Dialog;
-}
+QT_BEGIN_NAMESPACE
+namespace Ui { class Dialog; }
+QT_END_NAMESPACE
 
 class Dialog : public QDialog
 {
         Q_OBJECT
 
 public:
-        explicit Dialog(QWidget *parent = nullptr);
+        Dialog(QWidget *parent = nullptr);
         ~Dialog();
 
         void paintEvent(QPaintEvent *event);
@@ -32,3 +33,4 @@ private:
         Game game;
         QTimer *timer = nullptr;
 };
+#endif // DIALOG_H

@@ -7,6 +7,5 @@ int main(int argc, char *argv[])
         Dialog w;
         w.setWindowTitle("Chess");
         w.show();
-
         return a.exec();
 }

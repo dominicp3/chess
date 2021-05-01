@@ -1,34 +1,51 @@
 #pragma once
 
-#include "board.h"
-#include "pieces/bishop.h"
-#include "pieces/king.h"
-#include "pieces/knight.h"
-#include "pieces/pawn.h"
-#include "pieces/queen.h"
-#include "pieces/rook.h"
-#include <limits>
-#include <QPainter>
+#include "gamestate.h"
+#include "piecemove.h"
 #include <algorithm>
+#include <QPainter>
+#include <limits>
 #include <memory>
+#include <QDir>
 
 class Game
 {
 public:
-        Game();
         void render(QPainter& paint);
-        void select_square(int x, int y);
 
-        std::vector<std::shared_ptr<Board>> actions(Board& board, char player);
-        void next_move();
-        int minimax(std::shared_ptr<Board> node, int depth, int alpha, int beta, char player);
+        void select_square(int x, int y);
+        bool is_white(char piece);
+
+
+//        std::vector<std::shared_ptr<GameState>> actions(GameState& board, char player);
+//        void next_move();
+//        int minimax(std::shared_ptr<GameState> node, int depth, int alpha, int beta, char player);
 private:
-        Board m_board;
-        char m_colour_to_play = 'w';
+        void render_pieces(QPainter& paint);
+        void render_board(QPainter &paint);
+        void render_player_indicator(QPainter& paint);
+        void render_move_circles(QPainter& paint);
+
+        GameState m_gamestate;
+        PieceMove m_piecemove;
 
         // currently selected square (mouse input)
         int m_x;
         int m_y;
 
-        std::vector<std::pair<int, int>> m_circled_squares;
+        std::vector<std::unique_ptr<GameState>> m_potential_states;
+
+        QPixmap m_white_pawn_icon   = QPixmap(QDir::currentPath().append("/images/pawn_white.png"));
+        QPixmap m_white_knight_icon = QPixmap(QDir::currentPath().append("/images/knight_white.png"));
+        QPixmap m_white_bishop_icon = QPixmap(QDir::currentPath().append("/images/bishop_white.png"));
+        QPixmap m_white_rook_icon   = QPixmap(QDir::currentPath().append("/images/rook_white.png"));
+        QPixmap m_white_queen_icon  = QPixmap(QDir::currentPath().append("/images/queen_white.png"));
+        QPixmap m_white_king_icon   = QPixmap(QDir::currentPath().append("/images/king_white.png"));
+
+        QPixmap m_black_pawn_icon   = QPixmap(QDir::currentPath().append("/images/pawn_black.png"));
+        QPixmap m_black_knight_icon = QPixmap(QDir::currentPath().append("/images/knight_black.png"));
+        QPixmap m_black_bishop_icon = QPixmap(QDir::currentPath().append("/images/bishop_black.png"));
+        QPixmap m_black_rook_icon   = QPixmap(QDir::currentPath().append("/images/rook_black.png"));
+        QPixmap m_black_queen_icon  = QPixmap(QDir::currentPath().append("/images/queen_black.png"));
+        QPixmap m_black_king_icon   = QPixmap(QDir::currentPath().append("/images/king_black.png"));
 };

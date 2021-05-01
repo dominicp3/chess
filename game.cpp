@@ -1,40 +1,78 @@
 #include "game.h"
 #include <iostream>
 
-Game::Game(): m_board(
-                  {
-                          std::make_shared<Pawn>('w', 0, 1), std::make_shared<Pawn>('w', 1, 1), std::make_shared<Pawn>('w', 2, 1), std::make_shared<Pawn>('w', 3, 1),
-                          std::make_shared<Pawn>('w', 4, 1), std::make_shared<Pawn>('w', 5, 1), std::make_shared<Pawn>('w', 6, 1), std::make_shared<Pawn>('w', 7, 1),
-                          std::make_shared<Rook>('w', 0, 0), std::make_shared<Knight>('w', 1, 0),std::make_shared<Bishop>('w', 2, 0), std::make_shared<Queen>('w', 3, 0),
-                          std::make_shared<King>('w', 4, 0), std::make_shared<Bishop>('w', 5, 0), std::make_shared<Knight>('w', 6, 0), std::make_shared<Rook>('w', 7, 0)
-                  },
-
-                  {
-                          std::make_shared<Pawn>('b', 0, 6), std::make_shared<Pawn>('b', 1, 6), std::make_shared<Pawn>('b', 2, 6), std::make_shared<Pawn>('b', 3, 6),
-                          std::make_shared<Pawn>('b', 4, 6), std::make_shared<Pawn>('b', 5, 6), std::make_shared<Pawn>('b', 6, 6), std::make_shared<Pawn>('b', 7, 6),
-                          std::make_shared<Rook>('b', 0, 7), std::make_shared<Knight>('b', 1, 7), std::make_shared<Bishop>('b', 2, 7), std::make_shared<Queen>('b', 3, 7),
-                          std::make_shared<King>('b', 4, 7), std::make_shared<Bishop>('b', 5, 7), std::make_shared<Knight>('b', 6, 7), std::make_shared<Rook>('b', 7, 7),
-                  }
-              ) {}
-
 void Game::render(QPainter &paint)
 {
-        m_board.render(paint);
+        render_board(paint);
+        render_player_indicator(paint);
+        render_pieces(paint);
+        render_move_circles(paint);
+}
 
+void Game::render_pieces(QPainter &paint)
+{
+        for (unsigned int x = 0; x < 8; x++) {
+                for (unsigned int y = 0; y < 8; y++) {
+                        char piece = m_gamestate(x, y);
+                        if (piece > 0) {
+                                switch (piece) {
+                                case 'p': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_white_pawn_icon);
+                                          break;
+                                case 'n': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_white_knight_icon);
+                                          break;
+                                case 'b': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_white_bishop_icon);
+                                          break;
+                                case 'r': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_white_rook_icon);
+                                          break;
+                                case 'q': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_white_queen_icon);
+                                          break;
+                                case 'k': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_white_king_icon);
+                                          break;
+
+                                case 'P': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_black_pawn_icon);
+                                          break;
+                                case 'N': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_black_knight_icon);
+                                          break;
+                                case 'B': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_black_bishop_icon);
+                                          break;
+                                case 'R': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_black_rook_icon);
+                                          break;
+                                case 'Q': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_black_queen_icon);
+                                          break;
+                                case 'K': paint.drawPixmap(70 * x + 37, 626 - (69 * y + 103), m_black_king_icon);
+                                          break;
+                                default: break;
+                                }
+                        }
+                }
+        }
+}
+
+void Game::render_board(QPainter &paint)
+{
+        QPixmap boardImage {QDir::currentPath().append("/images/board.jpg")};
+        paint.drawPixmap(0, 0, boardImage);
+}
+
+void Game::render_player_indicator(QPainter& paint)
+{
         paint.setBrush(Qt::white);
-        if (m_colour_to_play == 'w') {
+
+        if (m_gamestate.white_to_move) {
                 paint.drawEllipse(626 - 20,
                                   626 - 40, 8, 8);
-        }
-
-        if (m_colour_to_play == 'b') {
+        } else {
                 paint.drawEllipse(626 - 20,
                                   40, 8, 8);
         }
+}
 
-        if (m_circled_squares.size() != 0) {
+void Game::render_move_circles(QPainter& paint)
+{
+        if (m_potential_states.size() != 0) {
                 paint.setBrush(Qt::blue);
-                for (std::pair<int, int>& cell : m_circled_squares) {
+                for (auto& state : m_potential_states) {
+                        std::pair<int, int> cell = state->current_move;
                         paint.drawEllipse(70 * cell.first + 60,
                                           590 - (70 * cell.second + 40), 15, 15);
                 }
@@ -47,11 +85,13 @@ void Game::select_square(int x, int y)
                 return;
         }
 
-        auto p = m_board[x][y];
+        char p = m_gamestate(x, y);
 
-        if (p != nullptr and p->colour() == m_colour_to_play) {
-                m_circled_squares = m_board.legal_moves(x, y);
-                if (m_circled_squares.size() != 0) {
+        if (p > 0 and is_white(p) == m_gamestate.white_to_move) {
+
+                m_potential_states = m_piecemove.moves(m_gamestate, x, y);
+//                std::cout << m_potential_states.size() << std::endl;
+                if (m_potential_states.size() != 0) {
                         m_x = x;
                         m_y = y;
                 }
@@ -59,121 +99,123 @@ void Game::select_square(int x, int y)
                 return;
         }
 
-        for (std::pair<int, int>& sq : m_circled_squares) {
-                if (x == sq.first && y == sq.second) {
-                        m_board.move_piece(m_x, m_y, x, y);
-                        m_colour_to_play = (m_colour_to_play == 'w') ? 'b' : 'w';
+        for (auto& state : m_potential_states) {
+
+                if (std::make_pair(x, y) == state->current_move) {
+                        m_gamestate = GameState(*state);
                 }
         }
 
-        m_circled_squares.clear();
+        m_potential_states.clear();
+}
 
-// ***********************************************************
-//        if (m_colour_to_play == 'b') {
-//                next_move();
-//                m_colour_to_play = 'w';
+bool Game::is_white(char p)
+{
+        if (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k') {
+                return true;
+        }
+
+        return false;
+}
+
+//std::vector<std::shared_ptr<Board>> Game::actions(Board& board, char player)
+//{
+//        std::vector<std::shared_ptr<Board>> actions;
+
+//        if (player == 'w') {
+//                for (auto& p : board.get_white_pieces()) {
+
+//                        std::vector<std::pair<int, int>> moves = board.legal_moves(p->x(), p->y());
+
+//                        for (std::pair<int, int> m : moves) {
+//                                std::shared_ptr<Board> new_board = std::make_shared<Board>(board);
+//                                new_board->move_piece(p->x(), p->y(), m.first, m.second);
+//                                actions.push_back(new_board);
+//                        }
+//                }
 //        }
-// ***********************************************************
-}
 
-std::vector<std::shared_ptr<Board>> Game::actions(Board& board, char player)
-{
-        std::vector<std::shared_ptr<Board>> actions;
+//        if (player == 'b') {
+//                for (auto& p : board.get_black_pieces()) {
+//                        std::vector<std::pair<int, int>> moves = board.legal_moves(p->x(), p->y());
 
-        if (player == 'w') {
-                for (auto& p : board.get_white_pieces()) {
+//                        for (std::pair<int, int> m : moves) {
+//                                std::shared_ptr<Board> new_board = std::make_shared<Board>(board);
+//                                new_board->move_piece(p->x(), p->y(), m.first, m.second);
+//                                actions.push_back(new_board);
 
-                        std::vector<std::pair<int, int>> moves = board.legal_moves(p->x(), p->y());
+//                        }
+//                }
+//        }
 
-                        for (std::pair<int, int> m : moves) {
-                                std::shared_ptr<Board> new_board = std::make_shared<Board>(board);
-                                new_board->move_piece(p->x(), p->y(), m.first, m.second);
-                                actions.push_back(new_board);
-                        }
-                }
-        }
+//        return actions;
+//}
 
-        if (player == 'b') {
-                for (auto& p : board.get_black_pieces()) {
-                        std::vector<std::pair<int, int>> moves = board.legal_moves(p->x(), p->y());
+//void Game::next_move()
+//{
+//        int depth = 2;
 
-                        for (std::pair<int, int> m : moves) {
-                                std::shared_ptr<Board> new_board = std::make_shared<Board>(board);
-                                new_board->move_piece(p->x(), p->y(), m.first, m.second);
-                                actions.push_back(new_board);
+//        int value = 0;
 
-                        }
-                }
-        }
+//        if (m_gamestate.white_to_move == 'w') {
+//                value = INT_MIN;
+//                for (auto& b : actions(m_board, m_gamestate.white_to_move)) {
+//                        if (minimax(b, depth, INT_MIN, INT_MAX, 'b') > value) {
+//                                m_board = Board(*b);
+//                        }
+//                }
+//        }
 
-        return actions;
-}
+//        if (m_gamestate.white_to_move == 'b') {
+//                value = INT_MAX;
+//                for (auto& b : actions(m_board, m_gamestate.white_to_move)) {
+//                        if (minimax(b, depth, INT_MIN, INT_MAX, 'w') < value) {
+//                                m_board = Board(*b);
+//                        }
+//                }
+//        }
 
-void Game::next_move()
-{
-        int depth = 2;
+////        std::cout << "VALUE = " << value << std::endl;
+//}
 
-        int value = 0;
+//int Game::minimax(std::shared_ptr<Board> node, int depth, int alpha, int beta, char player)
+//{
 
-        if (m_colour_to_play == 'w') {
-                value = INT_MIN;
-                for (auto& b : actions(m_board, m_colour_to_play)) {
-                        if (minimax(b, depth, INT_MIN, INT_MAX, 'b') > value) {
-                                m_board = Board(*b);
-                        }
-                }
-        }
+//        if (depth <= 0 or node->checkmate(player)) {
+//                return node->evaluate();
+//        }
 
-        if (m_colour_to_play == 'b') {
-                value = INT_MAX;
-                for (auto& b : actions(m_board, m_colour_to_play)) {
-                        if (minimax(b, depth, INT_MIN, INT_MAX, 'w') < value) {
-                                m_board = Board(*b);
-                        }
-                }
-        }
+////        node->print_board();
 
-//        std::cout << "VALUE = " << value << std::endl;
-}
+//        int value = 0;
 
-int Game::minimax(std::shared_ptr<Board> node, int depth, int alpha, int beta, char player)
-{
+//        if (player == 'w') {
 
-        if (depth <= 0 or node->checkmate(player)) {
-                return node->evaluate();
-        }
+//                auto moves = actions(*node, 'w');
 
-//        node->print_board();
+//                value = INT_MIN;
+//                for (auto &b : moves) {
+//                        value = std::max(value, minimax(b, depth - 1, alpha, beta, 'b'));
+//                        alpha = std::max(alpha, value);
+//                        if (alpha >= beta) {
+//                                break;
+//                        }
+//                }
+//        }
 
-        int value = 0;
+//        if (player == 'b') {
 
-        if (player == 'w') {
+//                auto moves = actions(*node, 'b');
 
-                auto moves = actions(*node, 'w');
+//                value = INT_MAX;
+//                for (auto &b : moves) {
+//                        value = std::min(value, minimax(b, depth - 1, alpha, beta, 'w'));
+//                        beta = std::min(alpha, value);
+//                        if (beta <= alpha) {
+//                                break;
+//                        }
+//                }
+//        }
 
-                value = INT_MIN;
-                for (auto &b : moves) {
-                        value = std::max(value, minimax(b, depth - 1, alpha, beta, 'b'));
-                        alpha = std::max(alpha, value);
-                        if (alpha >= beta) {
-                                break;
-                        }
-                }
-        }
-
-        if (player == 'b') {
-
-                auto moves = actions(*node, 'b');
-
-                value = INT_MAX;
-                for (auto &b : moves) {
-                        value = std::min(value, minimax(b, depth - 1, alpha, beta, 'w'));
-                        beta = std::min(alpha, value);
-                        if (beta <= alpha) {
-                                break;
-                        }
-                }
-        }
-
-        return value;
-}
+//        return value;
+//}

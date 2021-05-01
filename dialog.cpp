@@ -1,12 +1,12 @@
 #include "dialog.h"
 #include "ui_dialog.h"
-#include "board.h"
+#include "gamestate.h"
 #include <iostream>
 
-Dialog::Dialog(QWidget *parent) :
-        QDialog(parent),
-        ui(new Ui::Dialog),
-        timer(new QTimer(this))
+Dialog::Dialog(QWidget *parent)
+        : QDialog(parent)
+        , ui(new Ui::Dialog),
+          timer(new QTimer(this))
 {
         connect(timer, SIGNAL(timeout()), this, SLOT(nextFrame()));
         timer->start(20);
@@ -26,10 +26,7 @@ void Dialog::nextFrame()
 
 void Dialog::paintEvent(QPaintEvent *event)
 {
-        QPainter paint {this};
-        QPixmap boardImage {QDir::currentPath().append("/images/board.jpg")};
-        paint.drawPixmap(0, 0, boardImage);
-
+        QPainter paint(this);
         game.render(paint);
 }
 
