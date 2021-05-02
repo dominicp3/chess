@@ -89,7 +89,6 @@ void Game::select_square(int x, int y)
         if (p > 0 and is_white(p) == m_gamestate.white_to_move) {
 
                 m_potential_states = m_piecemove.moves(m_gamestate, x, y);
-//                std::cout << m_potential_states.size() << std::endl;
                 if (m_potential_states.size() != 0) {
                         m_x = x;
                         m_y = y;

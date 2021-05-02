@@ -128,6 +128,14 @@ void PieceMove::add_move_legal(GameState& board, std::vector<std::unique_ptr<Gam
                 }
         }
 
+        if (board(ox, oy) == 'p' and ny == 7) {
+                new_board.white_pieces[{ox, oy}] = 'q';
+        }
+
+        if (board(ox, oy) == 'P' and ny == 0) {
+                new_board.black_pieces[{ox, oy}] = 'Q';
+        }
+
         new_board.move_piece(ox, oy, nx, ny);
         new_board.white_to_move = not new_board.white_to_move;
 
