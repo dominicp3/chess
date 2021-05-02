@@ -1,7 +1,6 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 #include "gamestate.h"
-#include <iostream>
 
 Dialog::Dialog(QWidget *parent)
         : QDialog(parent)

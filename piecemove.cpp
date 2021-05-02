@@ -273,9 +273,10 @@ std::vector<std::pair<int, int>> PieceMove::bishop(GameState& board, int x, int 
         std::vector<std::pair<int, int>> moves;
 
         for (int ru = 1; x + ru < 8 and y + ru < 8; ru++) {
+
                 if (is_square_valid(board, x + ru, y + ru)) {
-                        moves.push_back({x, y + 1});
-                        if (board(x, y + 1) > 0) {
+                        moves.push_back({x + ru, y + ru});
+                        if (board(x + ru, y + ru) > 0) {
                                 break;
                         }
                 } else break;
@@ -605,9 +606,6 @@ bool PieceMove::is_white_in_check(GameState& board)
                         if (m == board.white_king_coord) {
                                 return true;
                         }
-                        if (board(m.first, m.second) > 0) {
-                                return false;
-                        }
                 }
         }
 
@@ -622,9 +620,6 @@ bool PieceMove::is_black_in_check(GameState& board)
                 for (auto& m : squares(board, it->first.first, it->first.second)) {
                         if (m == board.black_king_coord) {
                                 return true;
-                        }
-                        if (board(m.first, m.second) > 0) {
-                                return false;
                         }
                 }
         }

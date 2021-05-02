@@ -46,14 +46,13 @@ void GameState::move_piece(int ox, int oy, int nx, int ny)
                         white_king_coord = {nx, ny};
                 }
 
-                if (white_pieces.find({nx, ny}) != white_pieces.end()) {
-                        white_king_coord = {-1, -1};
-                }
-
                 white_pieces[{nx, ny}] = p;
                 white_pieces.erase({ox, oy});
 
                 if (black_pieces.find({nx, ny}) != black_pieces.end()) {
+                        if (black_pieces.at({nx, ny}) == 'K') {
+                                black_king_coord = {-1, -1};
+                        }
                         black_pieces.erase({nx, ny});
                 }
 
@@ -66,14 +65,13 @@ void GameState::move_piece(int ox, int oy, int nx, int ny)
                         black_king_coord = {nx, ny};
                 }
 
-                if (black_pieces.find({nx, ny}) != black_pieces.end()) {
-                        black_king_coord = {-1, -1};
-                }
-
                 black_pieces[{nx, ny}] = p;
                 black_pieces.erase({ox, oy});
 
                 if (white_pieces.find({nx, ny}) != white_pieces.end()) {
+                        if (white_pieces.at({nx, ny}) == 'K') {
+                                white_king_coord = {-1, -1};
+                        }
                         white_pieces.erase({nx, ny});
                 }
 
