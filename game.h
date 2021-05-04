@@ -17,9 +17,7 @@ public:
         bool is_white(char piece);
 
 
-//        std::vector<std::shared_ptr<GameState>> actions(GameState& board, char player);
-//        void next_move();
-//        int minimax(std::shared_ptr<GameState> node, int depth, int alpha, int beta, char player);
+
 private:
         void render_pieces(QPainter& paint);
         void render_board(QPainter &paint);

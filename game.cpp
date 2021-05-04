@@ -1,5 +1,7 @@
 #include "game.h"
 
+using namespace std;
+
 void Game::render(QPainter &paint)
 {
         render_board(paint);
@@ -71,7 +73,7 @@ void Game::render_move_circles(QPainter& paint)
         if (m_potential_states.size() != 0) {
                 paint.setBrush(Qt::blue);
                 for (auto& state : m_potential_states) {
-                        std::pair<int, int> cell = state->current_move;
+                        pair<int, int> cell = state->current_move;
                         paint.drawEllipse(70 * cell.first + 60,
                                           590 - (70 * cell.second + 40), 15, 15);
                 }
@@ -99,7 +101,7 @@ void Game::select_square(int x, int y)
 
         for (auto& state : m_potential_states) {
 
-                if (std::make_pair(x, y) == state->current_move) {
+                if (make_pair(x, y) == state->current_move) {
                         m_gamestate = GameState(*state);
                 }
         }
@@ -115,105 +117,3 @@ bool Game::is_white(char p)
 
         return false;
 }
-
-//std::vector<std::shared_ptr<Board>> Game::actions(Board& board, char player)
-//{
-//        std::vector<std::shared_ptr<Board>> actions;
-
-//        if (player == 'w') {
-//                for (auto& p : board.get_white_pieces()) {
-
-//                        std::vector<std::pair<int, int>> moves = board.legal_moves(p->x(), p->y());
-
-//                        for (std::pair<int, int> m : moves) {
-//                                std::shared_ptr<Board> new_board = std::make_shared<Board>(board);
-//                                new_board->move_piece(p->x(), p->y(), m.first, m.second);
-//                                actions.push_back(new_board);
-//                        }
-//                }
-//        }
-
-//        if (player == 'b') {
-//                for (auto& p : board.get_black_pieces()) {
-//                        std::vector<std::pair<int, int>> moves = board.legal_moves(p->x(), p->y());
-
-//                        for (std::pair<int, int> m : moves) {
-//                                std::shared_ptr<Board> new_board = std::make_shared<Board>(board);
-//                                new_board->move_piece(p->x(), p->y(), m.first, m.second);
-//                                actions.push_back(new_board);
-
-//                        }
-//                }
-//        }
-
-//        return actions;
-//}
-
-//void Game::next_move()
-//{
-//        int depth = 2;
-
-//        int value = 0;
-
-//        if (m_gamestate.white_to_move == 'w') {
-//                value = INT_MIN;
-//                for (auto& b : actions(m_board, m_gamestate.white_to_move)) {
-//                        if (minimax(b, depth, INT_MIN, INT_MAX, 'b') > value) {
-//                                m_board = Board(*b);
-//                        }
-//                }
-//        }
-
-//        if (m_gamestate.white_to_move == 'b') {
-//                value = INT_MAX;
-//                for (auto& b : actions(m_board, m_gamestate.white_to_move)) {
-//                        if (minimax(b, depth, INT_MIN, INT_MAX, 'w') < value) {
-//                                m_board = Board(*b);
-//                        }
-//                }
-//        }
-
-////        std::cout << "VALUE = " << value << std::endl;
-//}
-
-//int Game::minimax(std::shared_ptr<Board> node, int depth, int alpha, int beta, char player)
-//{
-
-//        if (depth <= 0 or node->checkmate(player)) {
-//                return node->evaluate();
-//        }
-
-////        node->print_board();
-
-//        int value = 0;
-
-//        if (player == 'w') {
-
-//                auto moves = actions(*node, 'w');
-
-//                value = INT_MIN;
-//                for (auto &b : moves) {
-//                        value = std::max(value, minimax(b, depth - 1, alpha, beta, 'b'));
-//                        alpha = std::max(alpha, value);
-//                        if (alpha >= beta) {
-//                                break;
-//                        }
-//                }
-//        }
-
-//        if (player == 'b') {
-
-//                auto moves = actions(*node, 'b');
-
-//                value = INT_MAX;
-//                for (auto &b : moves) {
-//                        value = std::min(value, minimax(b, depth - 1, alpha, beta, 'w'));
-//                        beta = std::min(alpha, value);
-//                        if (beta <= alpha) {
-//                                break;
-//                        }
-//                }
-//        }
-
-//        return value;
-//}

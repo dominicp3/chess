@@ -1,10 +1,12 @@
 #include "gamestate.h"
 
+using namespace std;
+
 GameState::GameState(piece_map& pieces, bool player): white_to_move(player)
 {
         for (auto it = pieces.begin(); it != pieces.end(); it++) {
 
-                std::pair<int, int> coord = it->first;
+                pair<int, int> coord = it->first;
                 char p = it->second;
 
                 if (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k') {
@@ -34,6 +36,11 @@ char GameState::operator()(int x, int y)
         return 0;
 }
 
+char GameState::operator()(pair<int, int> coord)
+{
+        return operator()(coord.first, coord.second);
+}
+
 void GameState::move_piece(int ox, int oy, int nx, int ny)
 {
         if (ox == nx and oy == ny) {
@@ -44,6 +51,14 @@ void GameState::move_piece(int ox, int oy, int nx, int ny)
                 char p = white_pieces.at({ox, oy});
                 if (p == 'k') {
                         white_king_coord = {nx, ny};
+                        white_king_moved = true;
+                }
+
+                if (p == 'r') {
+                        if (ox == 0)
+                                white_arook_moved = true;
+                        if (ox == 7)
+                                white_hrook_moved = true;
                 }
 
                 white_pieces[{nx, ny}] = p;
@@ -63,13 +78,21 @@ void GameState::move_piece(int ox, int oy, int nx, int ny)
                 char p = black_pieces.at({ox, oy});
                 if (p == 'K') {
                         black_king_coord = {nx, ny};
+                        black_king_moved = true;
+                }
+
+                if (p == 'R') {
+                        if (ox == 0)
+                                black_arook_moved = true;
+                        if (ox == 7)
+                                black_hrook_moved = true;
                 }
 
                 black_pieces[{nx, ny}] = p;
                 black_pieces.erase({ox, oy});
 
                 if (white_pieces.find({nx, ny}) != white_pieces.end()) {
-                        if (white_pieces.at({nx, ny}) == 'K') {
+                        if (white_pieces.at({nx, ny}) == 'k') {
                                 white_king_coord = {-1, -1};
                         }
                         white_pieces.erase({nx, ny});

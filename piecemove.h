@@ -17,6 +17,8 @@ private:
 
         std::vector<std::pair<int, int>> squares(GameState& board, int x, int y);
 
+        void castling(GameState& board, std::vector<std::unique_ptr<GameState>>& moves, int ox, int oy, int nx, int ny);
+
         std::vector<std::pair<int, int>> pawn_w(GameState& board, int x, int y);
         std::vector<std::pair<int, int>> pawn_b(GameState& board, int x, int y);
         std::vector<std::pair<int, int>> rook(GameState& board, int x, int y);

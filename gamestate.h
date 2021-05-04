@@ -10,6 +10,7 @@ struct GameState
         GameState() {}
         GameState(piece_map& pieces, bool player);
         char operator()(int x, int y);
+        char operator()(std::pair<int, int> coord);
         void move_piece(int ox, int oy, int nx, int ny);
 
         std::pair<int, int> current_move = {-1, -1};
@@ -43,4 +44,6 @@ struct GameState
 
         bool white_in_check = false;
         bool black_in_check = false;
+
+        bool en_passant = false;
 };
