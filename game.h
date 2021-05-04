@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
 
 #include "gamestate.h"
 #include "piecemove.h"
@@ -47,3 +48,4 @@ private:
         QPixmap m_black_queen_icon  = QPixmap(QDir::currentPath().append("/images/queen_black.png"));
         QPixmap m_black_king_icon   = QPixmap(QDir::currentPath().append("/images/king_black.png"));
 };
+#endif // GAME_H

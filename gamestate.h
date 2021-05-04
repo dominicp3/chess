@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAMESTATE_H
+#define GAMESTATE_H
 
 #include "hash.h"
 #include <unordered_map>
@@ -47,3 +48,4 @@ struct GameState
 
         bool en_passant = false;
 };
+#endif // GAMESTATE_H
