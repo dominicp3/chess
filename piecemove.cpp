@@ -689,7 +689,7 @@ bool PieceMove::king_check(GameState& board, int x, int y)
                 return true;
         }
 
-        if (king_x ==  - 1 and king_y == y + 1) {
+        if (king_x == x - 1 and king_y == y + 1) {
                 return true;
         }
 
