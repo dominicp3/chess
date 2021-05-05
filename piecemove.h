@@ -14,8 +14,9 @@ private:
         int is_white(char p);
         bool is_square_valid(GameState& board, int x, int y);
 
-        void add_move(GameState& board, std::vector<std::unique_ptr<GameState>>& moves, int ox, int oy, int nx, int ny);
-        void castling(GameState& board, std::vector<std::unique_ptr<GameState>>& moves, bool white, bool castle_short);
+        bool add_move(GameState& board, std::vector<std::unique_ptr<GameState>>& moves, int ox, int oy, int nx, int ny);
+        bool castling(std::unique_ptr<GameState> board, std::vector<std::unique_ptr<GameState>>& moves, bool white, bool castle_short);
+        void en_passant(std::unique_ptr<GameState>& board);
 
         std::vector<std::unique_ptr<GameState>> pawn_w(GameState& board, int x, int y);
         std::vector<std::unique_ptr<GameState>> pawn_b(GameState& board, int x, int y);

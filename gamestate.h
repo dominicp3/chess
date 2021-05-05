@@ -35,17 +35,17 @@ struct GameState
 
         bool white_to_move = true;
 
-        bool white_arook_moved = false;
-        bool white_hrook_moved = false;
-        bool white_king_moved = false;
+        bool white_castle_short = true;
+        bool white_castle_long = true;
 
-        bool black_arook_moved = false;
-        bool black_hrook_moved = false;
-        bool black_king_moved = false;
+        bool black_castle_short = true;
+        bool black_castle_long = true;
 
-        bool white_in_check = false;
-        bool black_in_check = false;
+        bool in_check = false;
 
-        bool en_passant = false;
+        bool en_passant_white = false; // white can execute en passant
+        bool en_passant_black = false;
+
+        bool en_passant = false; // flag to say en passant is being executed this move
 };
 #endif // GAMESTATE_H

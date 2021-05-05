@@ -51,14 +51,15 @@ void GameState::move_piece(int ox, int oy, int nx, int ny)
                 char p = white_pieces.at({ox, oy});
                 if (p == 'k') {
                         white_king_coord = {nx, ny};
-                        white_king_moved = true;
+                        white_castle_short = false;
+                        white_castle_long = false;
                 }
 
                 if (p == 'r') {
                         if (ox == 0)
-                                white_arook_moved = true;
+                                white_castle_long = false;
                         if (ox == 7)
-                                white_hrook_moved = true;
+                                white_castle_short = false;
                 }
 
                 white_pieces[{nx, ny}] = p;
@@ -78,14 +79,15 @@ void GameState::move_piece(int ox, int oy, int nx, int ny)
                 char p = black_pieces.at({ox, oy});
                 if (p == 'K') {
                         black_king_coord = {nx, ny};
-                        black_king_moved = true;
+                        black_castle_short = false;
+                        black_castle_long = false;
                 }
 
                 if (p == 'R') {
                         if (ox == 0)
-                                black_arook_moved = true;
+                                black_castle_long = false;
                         if (ox == 7)
-                                black_hrook_moved = true;
+                                black_castle_short = false;
                 }
 
                 black_pieces[{nx, ny}] = p;

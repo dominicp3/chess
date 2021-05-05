@@ -61,29 +61,19 @@ bool PieceMove::is_square_valid(GameState& board, int x, int y)
         return (square == 0) or ((is_white(square)) != board.white_to_move);
 }
 
-void PieceMove::add_move(GameState& board, vector<unique_ptr<GameState>>& moves, int ox, int oy, int nx, int ny)
+bool PieceMove::add_move(GameState& board, vector<unique_ptr<GameState>>& moves, int ox, int oy, int nx, int ny)
 {
         char piece = board(ox, oy);
-
-//      CASTLING
-        if ((piece == 'k' and not board.white_king_moved and (nx == 2 or nx == 6))
-         or (piece == 'K' and not board.black_king_moved and (nx == 2 or nx == 6)))
-        {
-                board.en_passant = false;
-                castling(board, moves, piece == 'k', nx == 6);
-                return;
-        }
-
         unique_ptr<GameState> new_board = make_unique<GameState>(board);
-        new_board->white_to_move = not new_board->white_to_move;
 
 //      EN PASSANT
-        if (new_board->en_passant) {
-                if (is_white(piece)) {
-                        new_board->black_pieces.erase(board.current_move);
-                } else {
-                        new_board->white_pieces.erase(board.current_move);
-                }
+        en_passant(new_board);
+
+//      CASTLING
+        if ((piece == 'k' and ox == 4 and (nx == 2 or nx == 6))
+         or (piece == 'K' and ox == 4 and (nx == 2 or nx == 6)))
+        {
+                return castling(move(new_board), moves, piece == 'k', nx == 6);
         }
 
 //      PAWN PROMOTION
@@ -94,39 +84,67 @@ void PieceMove::add_move(GameState& board, vector<unique_ptr<GameState>>& moves,
         }
 
         new_board->move_piece(ox, oy, nx, ny);
-        new_board->en_passant = false;
 
-        if (not in_check(*new_board)) {
-                moves.push_back(move(new_board));
+        if (piece_check(board, nx, ny)) {
+                new_board->in_check = true;
+        } else {
+                new_board->in_check = false;
         }
+
+        new_board->white_to_move = not new_board->white_to_move;
+
+        if (in_check(*new_board)) {
+                return false;
+        }
+
+        moves.push_back(move(new_board));
+        return true;
 }
 
-void PieceMove::castling(GameState& board, vector<unique_ptr<GameState>>& moves, bool white, bool castle_short)
+void PieceMove::en_passant(unique_ptr<GameState>& board)
 {
-        unique_ptr<GameState> new_board = make_unique<GameState>(board);
+        if (board->en_passant and board->en_passant_white) {
+                board->black_pieces.erase(board->current_move);
+        } else if (board->en_passant and board->en_passant_black) {
+                board->white_pieces.erase(board->current_move);
+        }
+
+        if (board->white_to_move) {
+                board->en_passant_white = false;
+        } else {
+                board->en_passant_black = false;
+        }
+        board->en_passant = false;
+}
+
+bool PieceMove::castling(unique_ptr<GameState> board, vector<unique_ptr<GameState>>& moves, bool white, bool castle_short)
+{
 
         int y = white ? 0 : 7;
         int k = castle_short ? 1 : -1;
         int ra = castle_short ? 7 : 0;
         int rb = castle_short ? 5 : 3;
 
-        new_board->white_to_move = not new_board->white_to_move;
+        board->white_to_move = not board->white_to_move;
 
-        if (in_check(*new_board)) {
-                return;
+        if (in_check(*board)) {
+                return false;
         }
-        new_board->move_piece(4, y, 4+k, y);
-        if (in_check(*new_board)) {
-                return;
+        board->move_piece(4, y, 4+k, y);
+        if (in_check(*board)) {
+                return false;
         }
-        new_board->move_piece(4+k, y, 4+2*k, y);
+        board->move_piece(4+k, y, 4+2*k, y);
 
-        new_board->move_piece(ra, y, rb, y);
-        new_board->current_move = {4 + 2*k, y};
+        board->move_piece(ra, y, rb, y);
+        board->current_move = {4 + 2*k, y};
 
-        if (not in_check(*new_board)) {
-                moves.push_back(move(new_board));
+        if (in_check(*board)) {
+                return false;
         }
+
+        moves.push_back(move(board));
+        return true;
 }
 
 vector<unique_ptr<GameState>> PieceMove::pawn_w(GameState& board, int x, int y)
@@ -134,6 +152,7 @@ vector<unique_ptr<GameState>> PieceMove::pawn_w(GameState& board, int x, int y)
         vector<unique_ptr<GameState>> moves;
 
         if (y == 1 and !board(x, y + 1) and !board(x, y + 2)) {
+                board.en_passant_black = true;
                 add_move(board, moves, x, y, x, y + 2);
         }
 
@@ -149,17 +168,14 @@ vector<unique_ptr<GameState>> PieceMove::pawn_w(GameState& board, int x, int y)
                 add_move(board, moves, x, y, x - 1, y + 1);
         }
 
-//      EN PASSANT
-        if (board(board.current_move) == 'P') {
-                if (board.current_move == make_pair(x+1, y)) {
-                        board.en_passant = true;
-                        add_move(board, moves, x, y, x+1, y+1);
-                }
+        if (board.en_passant_white and board.current_move == make_pair(x+1, y)) {
+                board.en_passant = true;
+                add_move(board, moves, x, y, x+1, y+1);
+        }
 
-                if (board.current_move == make_pair(x-1, y)) {
-                        board.en_passant = true;
-                        add_move(board, moves, x, y, x-1, y+1);
-                }
+        if (board.en_passant_white and board.current_move == make_pair(x-1, y)) {
+                board.en_passant = true;
+                add_move(board, moves, x, y, x-1, y+1);
         }
 
         return moves;
@@ -170,6 +186,7 @@ vector<unique_ptr<GameState>> PieceMove::pawn_b(GameState& board, int x, int y)
         vector<unique_ptr<GameState>> moves;
 
         if (y == 6 and !board(x, y - 1) and !board(x, y - 2)) {
+                board.en_passant_white = true;
                 add_move(board, moves, x, y, x, y - 2);
         }
 
@@ -185,19 +202,6 @@ vector<unique_ptr<GameState>> PieceMove::pawn_b(GameState& board, int x, int y)
                 add_move(board, moves, x, y, x - 1, y - 1);
         }
 
-//      EN PASSANT
-        if (board(board.current_move) == 'p') {
-                if (board.current_move == make_pair(x + 1, y)) {
-                        board.en_passant = true;
-                        add_move(board, moves, x, y, x+1, y-1);
-                }
-
-                if (board.current_move == make_pair(x - 1, y)) {
-                        board.en_passant = true;
-                        add_move(board, moves, x, y, x-1, y-1);
-                }
-        }
-
         return moves;
 }
 
@@ -207,7 +211,9 @@ vector<unique_ptr<GameState>> PieceMove::rook(GameState& board, int x, int y)
 
         for (int right = x+1; right < 8; right++) {
                 if (is_square_valid(board, right, y)) {
-                        add_move(board, moves, x, y, right, y);
+                        if (not add_move(board, moves, x, y, right, y) and not board.in_check) {
+                                break;
+                        }
                         if (board(right, y) > 0) {
                                 break;
                         }
@@ -216,7 +222,9 @@ vector<unique_ptr<GameState>> PieceMove::rook(GameState& board, int x, int y)
 
         for (int left = x-1; left >= 0; left--) {
                 if (is_square_valid(board, left, y)) {
-                        add_move(board, moves, x, y, left, y);
+                        if (not add_move(board, moves, x, y, left, y) and not board.in_check) {
+                                break;
+                        }
                         if (board(left, y) > 0) {
                                 break;
                         }
@@ -225,7 +233,9 @@ vector<unique_ptr<GameState>> PieceMove::rook(GameState& board, int x, int y)
 
         for (int top = y+1; top < 8; top++) {
                 if (is_square_valid(board, x, top)) {
-                        add_move(board, moves, x, y, x, top);
+                        if (not add_move(board, moves, x, y, x, top) and not board.in_check) {
+                                break;
+                        }
                         if (board(x, top) > 0) {
                                 break;
                         }
@@ -234,7 +244,9 @@ vector<unique_ptr<GameState>> PieceMove::rook(GameState& board, int x, int y)
 
         for (int bottom = y-1; bottom >= 0; bottom--) {
                 if (is_square_valid(board, x, bottom)) {
-                        add_move(board, moves, x, y, x, bottom);
+                        if (not add_move(board, moves, x, y, x, bottom) and not board.in_check) {
+                                break;
+                        }
                         if (board(x, bottom) > 0) {
                                 break;
                         }
@@ -247,37 +259,54 @@ vector<unique_ptr<GameState>> PieceMove::rook(GameState& board, int x, int y)
 vector<unique_ptr<GameState>> PieceMove::knight(GameState& board, int x, int y)
 {
         vector<unique_ptr<GameState>> moves;
+        bool b = true;
 
-        if (is_square_valid(board, x+2, y+1)) {
-                add_move(board, moves, x, y, x+2, y+1);
+        if (b and is_square_valid(board, x+2, y+1)) {
+                if (not add_move(board, moves, x, y, x+2, y+1) and not board.in_check) {
+                        b = false;
+                }
         }
 
-        if (is_square_valid(board, x+2, y-1)) {
-                add_move(board, moves, x, y, x+2, y-1);
+        if (b and is_square_valid(board, x+2, y-1)) {
+                if (not add_move(board, moves, x, y, x+2, y-1) and not board.in_check) {
+                        b = false;
+                }
         }
 
-        if (is_square_valid(board, x-2, y+1)) {
-                add_move(board, moves, x, y, x-2, y+1);
+        if (b and is_square_valid(board, x-2, y+1)) {
+                if (not add_move(board, moves, x, y, x-2, y+1) and not board.in_check) {
+                        b = false;
+                }
         }
 
-        if (is_square_valid(board, x-2, y-1)) {
-                add_move(board, moves, x, y, x-2, y-1);
+        if (b and is_square_valid(board, x-2, y-1)) {
+                if (not add_move(board, moves, x, y, x-2, y-1) and not board.in_check) {
+                        b = false;
+                }
         }
 
-        if (is_square_valid(board, x+1, y+2)) {
-                add_move(board, moves, x, y, x+1, y+2);
+        if (b and is_square_valid(board, x+1, y+2)) {
+                if (not add_move(board, moves, x, y, x+1, y+2) and not board.in_check) {
+                        b = false;
+                }
         }
 
-        if (is_square_valid(board, x-1, y+2)) {
-                add_move(board, moves, x, y, x-1, y+2);
+        if (b and is_square_valid(board, x-1, y+2)) {
+                if (not add_move(board, moves, x, y, x-1, y+2) and not board.in_check) {
+                        b = false;
+                }
         }
 
-        if (is_square_valid(board, x+1, y-2)) {
-                add_move(board, moves, x, y, x+1, y-2);
+        if (b and is_square_valid(board, x+1, y-2)) {
+                if (not add_move(board, moves, x, y, x+1, y-2) and not board.in_check) {
+                        b = false;
+                }
         }
 
-        if (is_square_valid(board, x-1, y-2)) {
-                add_move(board, moves, x, y, x-1, y-2);
+        if (b and is_square_valid(board, x-1, y-2)) {
+                if (not add_move(board, moves, x, y, x-1, y-2) and not board.in_check) {
+                        b = false;
+                }
         }
 
         return moves;
@@ -289,7 +318,9 @@ vector<unique_ptr<GameState>> PieceMove::bishop(GameState& board, int x, int y)
 
         for (int ru = 1; x + ru < 8 and y + ru < 8; ru++) {
                 if (is_square_valid(board, x + ru, y + ru)) {
-                        add_move(board, moves, x, y, x + ru, y + ru);
+                        if (not add_move(board, moves, x, y, x + ru, y + ru) and not board.in_check) {
+                                break;
+                        }
                         if (board(x + ru, y + ru) > 0) {
                                 break;
                         }
@@ -298,7 +329,9 @@ vector<unique_ptr<GameState>> PieceMove::bishop(GameState& board, int x, int y)
 
         for (int rd = 1; x + rd < 8 and y - rd >= 0; rd++) {
                 if (is_square_valid(board, x + rd, y - rd)) {
-                        add_move(board, moves, x, y, x + rd, y - rd);
+                        if (not add_move(board, moves, x, y, x + rd, y - rd) and not board.in_check) {
+                                break;
+                        }
                         if (board(x + rd, y - rd) > 0) {
                                 break;
                         }
@@ -307,7 +340,9 @@ vector<unique_ptr<GameState>> PieceMove::bishop(GameState& board, int x, int y)
 
         for (int lu = 1; x - lu >= 0 and y + lu < 8; lu++) {
                 if (is_square_valid(board, x - lu, y + lu)) {
-                        add_move(board, moves, x, y, x - lu, y + lu);
+                        if (not add_move(board, moves, x, y, x - lu, y + lu) and not board.in_check) {
+                                break;
+                        }
                         if (board(x - lu, y + lu) > 0) {
                                 break;
                         }
@@ -316,7 +351,9 @@ vector<unique_ptr<GameState>> PieceMove::bishop(GameState& board, int x, int y)
 
         for (int ld = 1; x - ld >= 0 and y - ld >= 0; ld++) {
                 if (is_square_valid(board, x - ld, y - ld)) {
-                        add_move(board, moves, x, y, x - ld, y - ld);
+                        if (not add_move(board, moves, x, y, x - ld, y - ld) and not board.in_check) {
+                                break;
+                        }
                         if (board(x - ld, y - ld) > 0) {
                                 break;
                         }
@@ -381,28 +418,28 @@ vector<unique_ptr<GameState>> PieceMove::king(GameState& board, int x, int y)
         }
 
         // CASTLING SHORT WHITE
-        if (is_white(board(x, y)) and not board.white_king_moved and not board.white_hrook_moved) {
+        if (is_white(board(x, y)) and board.white_castle_short) {
                 if (!board(x+1, y) and !board(x+2, y)) {
                         add_move(board, moves, x, y, x+2, y);
                 }
         }
 
         // CASTLING LONG WHITE
-        if (is_white(board(x, y)) and not board.white_king_moved and not board.white_arook_moved) {
+        if (is_white(board(x, y)) and board.white_castle_long) {
                 if (!board(x-1, y) and !board(x-2, y)) {
                         add_move(board, moves, x, y, x-2, y);
                 }
         }
 
         // CASTLING SHORT BLACK
-        if (not is_white(board(x, y)) and not board.black_king_moved and not board.black_hrook_moved) {
+        if (not is_white(board(x, y)) and board.black_castle_short) {
                 if (!board(x+1, y) and !board(x+2, y)) {
                         add_move(board, moves, x, y, x+2, y);
                 }
         }
 
         // CASTLING LONG BLACK
-        if (not is_white(board(x, y)) and not board.black_king_moved and not board.black_arook_moved) {
+        if (not is_white(board(x, y)) and board.black_castle_long) {
                 if (!board(x-1, y) and !board(x-2, y)) {
                         add_move(board, moves, x, y, x-2, y);
                 }
@@ -473,6 +510,8 @@ bool PieceMove::rook_check(GameState& board, int x, int y)
         int king_x = board.white_to_move ? board.black_king_coord.first : board.white_king_coord.first;
         int king_y = board.white_to_move ? board.black_king_coord.second : board.white_king_coord.second;
 
+
+
         if (y == king_y and x < king_x) {
                 for (int right = x+1; right < 8; right++) {
                         if (right == king_x) {
@@ -500,7 +539,7 @@ bool PieceMove::rook_check(GameState& board, int x, int y)
                         if (top == king_y) {
                                 return true;
                         }
-                        if (board(top, y) > 0) {
+                        if (board(x, top) > 0) {
                                 return false;
                         }
                 }
