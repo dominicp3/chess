@@ -9,7 +9,7 @@ CONFIG += c++14
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    computer.cpp \
+    engine.cpp \
     game.cpp \
     gamestate.cpp \
     main.cpp \
@@ -17,8 +17,8 @@ SOURCES += \
     piecemove.cpp
 
 HEADERS += \
-    computer.h \
     dialog.h \
+    engine.h \
     game.h \
     gamestate.h \
     hash.h \

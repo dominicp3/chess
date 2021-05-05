@@ -304,9 +304,7 @@ vector<unique_ptr<GameState>> PieceMove::knight(GameState& board, int x, int y)
         }
 
         if (b and is_square_valid(board, x-1, y-2)) {
-                if (not add_move(board, moves, x, y, x-1, y-2) and not board.in_check) {
-                        b = false;
-                }
+                add_move(board, moves, x, y, x-1, y-2);
         }
 
         return moves;

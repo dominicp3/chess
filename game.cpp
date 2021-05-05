@@ -91,6 +91,7 @@ void Game::select_square(int x, int y)
         if (p > 0 and is_white(p) == m_gamestate.white_to_move) {
 
                 m_potential_states = m_piecemove.moves(m_gamestate, x, y);
+
                 if (m_potential_states.size() != 0) {
                         m_x = x;
                         m_y = y;
@@ -100,7 +101,6 @@ void Game::select_square(int x, int y)
         }
 
         for (auto& state : m_potential_states) {
-
                 if (make_pair(x, y) == state->current_move) {
                         m_gamestate = GameState(*state);
                 }
@@ -111,9 +111,5 @@ void Game::select_square(int x, int y)
 
 bool Game::is_white(char p)
 {
-        if (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k') {
-                return true;
-        }
-
-        return false;
+        return (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k');
 }

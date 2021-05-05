@@ -23,13 +23,13 @@ void Dialog::nextFrame()
         update();
 }
 
-void Dialog::paintEvent(QPaintEvent *event)
+void Dialog::paintEvent(QPaintEvent* event)
 {
         QPainter paint(this);
         game.render(paint);
 }
 
-void Dialog::mouseReleaseEvent(QMouseEvent *event)
+void Dialog::mouseReleaseEvent(QMouseEvent* event)
 {
         int x = (event->x() - 36) / 69;
         int y = 7 - ((event->y() - 36) / 69);

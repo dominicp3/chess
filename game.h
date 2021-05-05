@@ -3,6 +3,7 @@
 
 #include "gamestate.h"
 #include "piecemove.h"
+#include "engine.h"
 #include <algorithm>
 #include <QPainter>
 #include <limits>
@@ -21,12 +22,13 @@ public:
 
 private:
         void render_pieces(QPainter& paint);
-        void render_board(QPainter &paint);
+        void render_board(QPainter& paint);
         void render_player_indicator(QPainter& paint);
         void render_move_circles(QPainter& paint);
 
         GameState m_gamestate;
         PieceMove m_piecemove;
+        Engine m_engine;
 
         // currently selected square (mouse input)
         int m_x;
