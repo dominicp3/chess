@@ -27,8 +27,6 @@ private:
         void render_move_circles(QPainter& paint);
 
         GameState m_gamestate;
-        PieceMove m_piecemove;
-        Engine m_engine;
 
         // currently selected square (mouse input)
         int m_x;
