@@ -18,8 +18,6 @@ public:
         void select_square(int x, int y);
         bool is_white(char piece);
 
-
-
 private:
         void render_pieces(QPainter& paint);
         void render_board(QPainter& paint);

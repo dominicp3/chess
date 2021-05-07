@@ -31,6 +31,10 @@ void Dialog::paintEvent(QPaintEvent* event)
 
 void Dialog::mouseReleaseEvent(QMouseEvent* event)
 {
+        if (event->button() != Qt::LeftButton) {
+                return;
+        }
+
         int x = (event->x() - 36) / 69;
         int y = 7 - ((event->y() - 36) / 69);
 
