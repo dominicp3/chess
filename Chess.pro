@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg
 
 CONFIG += c++14
 
@@ -10,19 +10,23 @@ CONFIG += c++14
 
 SOURCES += \
     engine.cpp \
-    game.cpp \
     gamestate.cpp \
+    grid.cpp \
     main.cpp \
     dialog.cpp \
-    piecemove.cpp
+    mydelegate.cpp \
+    piecemove.cpp \
+    square.cpp
 
 HEADERS += \
     dialog.h \
     engine.h \
-    game.h \
     gamestate.h \
+    grid.h \
     hash.h \
-    piecemove.h
+    mydelegate.h \
+    piecemove.h \
+    square.h
 
 FORMS += \
     dialog.ui
