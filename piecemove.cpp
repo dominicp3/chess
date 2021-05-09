@@ -389,7 +389,10 @@ namespace piecemove {
                                 add_move(board, moves, x, y, x, y + 2);
                         }
 
+                        board.en_passant_black = false;
+
                         if (!board(x, y + 1)) {
+
                                 add_move(board, moves, x, y, x, y + 1);
                         }
 
@@ -422,6 +425,8 @@ namespace piecemove {
                                 board.en_passant_white = true;
                                 add_move(board, moves, x, y, x, y - 2);
                         }
+
+                        board.en_passant_white = false;
 
                         if (!board(x, y - 1)) {
                                 add_move(board, moves, x, y, x, y - 1);
