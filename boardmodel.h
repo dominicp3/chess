@@ -21,6 +21,8 @@ public:
         void select_square(int x, int y);
 
         bool is_white(char p);
+signals:
+        void player_change();
 
 private:
         void set_squares(std::unique_ptr<GameState>& gamestate);

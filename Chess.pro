@@ -13,6 +13,7 @@ SOURCES += \
     dialog.cpp \
     engine.cpp \
     gamestate.cpp \
+    indicator.cpp \
     main.cpp \
     mydelegate.cpp \
     piecemove.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     engine.h \
     gamestate.h \
     hash.h \
+    indicator.h \
     mydelegate.h \
     piecemove.h \
     square.h

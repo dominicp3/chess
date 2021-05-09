@@ -1,6 +1,7 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
+#include <QLabel>
 #include <QDialog>
 #include <QHeaderView>
 #include <QHBoxLayout>
@@ -23,5 +24,6 @@ private:
         QHBoxLayout* hboxlayout;
         QTableView* tableview;
         BoardModel* boardmodel;
+        QLabel* player_indicator;
 };
 #endif // DIALOG_H

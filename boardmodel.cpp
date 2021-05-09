@@ -77,11 +77,11 @@ void BoardModel::select_square(int x, int y)
                 if (make_pair(x, y) == state->current_move) {
                         gamestate = move(state);
                         set_squares(gamestate);
+                        emit this->dataChanged(QModelIndex(), QModelIndex());
                         break;
                 }
         }
 
-        emit this->dataChanged(QModelIndex(), QModelIndex());
         potential_states.clear();
 }
 
