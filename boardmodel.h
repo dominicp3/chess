@@ -8,6 +8,7 @@
 
 class BoardModel : public QAbstractTableModel
 {
+        Q_OBJECT
 public:
         explicit BoardModel(QObject *parent, GameState gamestate);
         int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -21,6 +22,7 @@ public:
         void select_square(int x, int y);
 
         bool is_white(char p);
+
 signals:
         void player_change();
 

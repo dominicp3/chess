@@ -1,5 +1,4 @@
 #include "boardmodel.h"
-#include <iostream>
 
 using namespace std;
 
@@ -62,14 +61,13 @@ void BoardModel::select_square(int x, int y)
                 return;
         }
 
-        clear_dots();
-
         char p = (*gamestate)(x, y);
+        clear_dots();
 
         if (p > 0 and is_white(p) == gamestate->white_to_move) {
                 potential_states = piecemove::moves(*gamestate, x, y);
                 set_dots(potential_states);
-                emit dataChanged(QModelIndex(), QModelIndex());
+                emit this->dataChanged(QModelIndex(), QModelIndex());
                 return;
         }
 
@@ -77,11 +75,12 @@ void BoardModel::select_square(int x, int y)
                 if (make_pair(x, y) == state->current_move) {
                         gamestate = move(state);
                         set_squares(gamestate);
-                        emit this->dataChanged(QModelIndex(), QModelIndex());
+                        emit player_change();
                         break;
                 }
         }
 
+        emit this->dataChanged(QModelIndex(), QModelIndex());
         potential_states.clear();
 }
 

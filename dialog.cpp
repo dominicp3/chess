@@ -12,9 +12,10 @@ Dialog::Dialog(QWidget* parent):
         hboxlayout(new QHBoxLayout(this)),
         tableview(new QTableView(this)),
         boardmodel(new BoardModel(tableview, GameState())),
-        player_indicator(new QLabel(this))
+        player_indicator(new Indicator(this))
 {
         connect(tableview, SIGNAL(clicked(QModelIndex)), this, SLOT(cell_click(QModelIndex)));
+        connect(boardmodel, SIGNAL(player_change()), player_indicator, SLOT(switch_player()));
 
         setFixedSize(BOARD_SIZE, BOARD_SIZE);
 

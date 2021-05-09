@@ -9,6 +9,7 @@
 #include "piecemove.h"
 #include "mydelegate.h"
 #include "boardmodel.h"
+#include "indicator.h"
 
 class Dialog : public QDialog
 {
@@ -24,6 +25,6 @@ private:
         QHBoxLayout* hboxlayout;
         QTableView* tableview;
         BoardModel* boardmodel;
-        QLabel* player_indicator;
+        Indicator* player_indicator;
 };
 #endif // DIALOG_H
