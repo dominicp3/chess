@@ -1,4 +1,5 @@
 #include "boardmodel.h"
+#include <iostream>
 
 using namespace std;
 
@@ -55,8 +56,16 @@ void BoardModel::clear_dots()
         }
 }
 
-void BoardModel::select_square(int x, int y)
+bool BoardModel::is_white(char p)
 {
+        return (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k');
+}
+
+void BoardModel::cell_click(const QModelIndex& index)
+{
+        int x = index.column();
+        int y = 7 - index.row();
+
         if (x < 0 or x >= 8 or y < 0 or y >= 8) {
                 return;
         }
@@ -82,11 +91,6 @@ void BoardModel::select_square(int x, int y)
 
         emit this->dataChanged(QModelIndex(), QModelIndex());
         potential_states.clear();
-}
-
-bool BoardModel::is_white(char p)
-{
-        return (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k');
 }
 
 void BoardModel::set_squares(unique_ptr<GameState>& gamestate)

@@ -19,12 +19,14 @@ public:
 
         void set_dots(std::vector<std::unique_ptr<GameState>>& states);
         void clear_dots();
-        void select_square(int x, int y);
 
         bool is_white(char p);
 
 signals:
         void player_change();
+
+private slots:
+        void cell_click(const QModelIndex& index);
 
 private:
         void set_squares(std::unique_ptr<GameState>& gamestate);

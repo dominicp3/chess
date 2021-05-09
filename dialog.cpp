@@ -14,23 +14,24 @@ Dialog::Dialog(QWidget* parent):
         boardmodel(new BoardModel(tableview, GameState())),
         player_indicator(new Indicator(this))
 {
-        connect(tableview, SIGNAL(clicked(QModelIndex)), this, SLOT(cell_click(QModelIndex)));
+        connect(tableview, SIGNAL(clicked(QModelIndex)), boardmodel, SLOT(cell_click(QModelIndex)));
         connect(boardmodel, SIGNAL(player_change()), player_indicator, SLOT(switch_player()));
 
         setFixedSize(BOARD_SIZE, BOARD_SIZE);
+
+        hboxlayout->setContentsMargins(BORDER, BORDER, 0, BORDER);
+        hboxlayout->setSpacing(0);
 
         tableview->setModel(boardmodel);
         tableview->setItemDelegate(new MyDelegate);
 
         tableview->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        tableview->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         tableview->horizontalHeader()->hide();
+
+        tableview->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         tableview->verticalHeader()->hide();
+
         tableview->setFrameShape(QFrame::NoFrame);
-
-        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-        hboxlayout->setContentsMargins(BORDER, BORDER, 0, BORDER);
 
         QSizePolicy sp_tableview(QSizePolicy::Expanding, QSizePolicy::Expanding);
         tableview->setSizePolicy(sp_tableview);
@@ -38,15 +39,8 @@ Dialog::Dialog(QWidget* parent):
 
         QSizePolicy sp_indicator(QSizePolicy::Fixed, QSizePolicy::Expanding);
         player_indicator->setSizePolicy(sp_indicator);
+        hboxlayout->addWidget(player_indicator);
 
         player_indicator->setFixedWidth(BORDER);
-        hboxlayout->addWidget(player_indicator);
-        hboxlayout->setSpacing(0);
-
         setLayout(hboxlayout);
-}
-
-void Dialog::cell_click(const QModelIndex &index)
-{
-        boardmodel->select_square(index.column(), 7-index.row());
 }

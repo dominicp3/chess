@@ -2,10 +2,8 @@
 
 using namespace std;
 
-Indicator::Indicator(QWidget* parent) : QWidget(parent)
-{
-
-}
+Indicator::Indicator(QWidget* parent):
+        QWidget(parent) {}
 
 void Indicator::paintEvent(QPaintEvent* event)
 {
