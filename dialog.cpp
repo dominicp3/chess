@@ -23,7 +23,7 @@ Dialog::Dialog(QWidget* parent):
         hboxlayout->setSpacing(0);
 
         tableview->setModel(boardmodel);
-        tableview->setItemDelegate(new MyDelegate);
+        tableview->setItemDelegate(new MyDelegate(this));
 
         tableview->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         tableview->horizontalHeader()->hide();
