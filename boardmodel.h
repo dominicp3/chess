@@ -1,37 +1,33 @@
-#ifndef GRID_H
-#define GRID_H
+#ifndef BOARDMODEL_H
+#define BOARDMODEL_H
 
-#include <QSvgWidget>
-#include <QSvgRenderer>
-#include <QPainter>
-#include <QWidget>
-#include <QPixmap>
 #include <QTableWidgetItem>
-#include <QAbstractItemModel>
-#include <QVariant>
-#include <QDir>
-#include <QWidget>
-#include <vector>
-#include <QModelIndex>
 #include "square.h"
 #include "gamestate.h"
+#include "piecemove.h"
 
-class Grid : public QAbstractTableModel
+class BoardModel : public QAbstractTableModel
 {
 public:
-        explicit Grid(QObject *parent, GameState& gamestate);
+        explicit BoardModel(QObject *parent, GameState gamestate);
         int columnCount(const QModelIndex &parent = QModelIndex()) const override;
         int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
         QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
         QModelIndex parent(const QModelIndex &index) const override;
-        bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
-        void set_dot(bool d, int x, int y);
+        void set_dots(std::vector<std::unique_ptr<GameState>>& states);
+        void clear_dots();
+        void select_square(int x, int y);
+
+        bool is_white(char p);
 
 private:
-        void setup(bool white, char piece);
-        std::vector<std::vector<Square*>> grid = {
+        void set_squares(std::unique_ptr<GameState>& gamestate);
+
+        std::unique_ptr<GameState> gamestate;
+        std::vector<std::unique_ptr<GameState>> potential_states;
+        Square* squares[8][8] = {
                 {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
                 {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
                 {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
@@ -41,8 +37,6 @@ private:
                 {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
                 {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr}
         };
-
-        QPixmap* pm = new QPixmap("images/wQ.svg");
 };
 
-#endif // GRID_H
+#endif // BOARDMODEL_H

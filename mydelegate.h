@@ -2,7 +2,6 @@
 #define MYDELEGATE_H
 
 #include <QAbstractItemDelegate>
-#include <QVariant>
 #include "square.h"
 
 class MyDelegate : public QAbstractItemDelegate

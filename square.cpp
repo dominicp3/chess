@@ -3,8 +3,9 @@
 
 using namespace std;
 
-Square::Square(bool white, char piece):
-        white(white)
+Square::Square(bool white, char piece, bool dot):
+        white(white),
+        dot(dot)
 {
         QString path = "pieces/cardinal";
         switch (piece) {
@@ -52,11 +53,16 @@ void Square::render(QPainter* paint, QRect rect)
 
         if (dot) {
                 paint->setBrush(Qt::blue);
-                paint->drawEllipse(QPoint(rect.width()/2, rect.height()/2), 7, 7);
+                paint->drawEllipse(QPoint(rect.x() + rect.width()/2, rect.y() + rect.height()/2), 7, 7);
         }
 }
 
 void Square::set_dot(bool d)
 {
         dot = d;
+}
+
+bool Square::get_dot()
+{
+        return dot;
 }

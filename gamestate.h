@@ -1,8 +1,8 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include "hash.h"
 #include <unordered_map>
+#include "hash.h"
 
 typedef std::unordered_map<std::pair<int, int>, char, pair_hash> piece_map;
 
