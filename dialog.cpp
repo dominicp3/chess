@@ -1,10 +1,10 @@
 #include "dialog.h"
 
+using namespace std;
+
 enum CONSTANTS {
         BOARD_SIZE = 650
 };
-
-using namespace std;
 
 Dialog::Dialog(QWidget *parent):
         QDialog(parent),
