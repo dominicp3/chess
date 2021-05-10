@@ -347,6 +347,7 @@ namespace piecemove {
 
                 //      EN PASSANT
                         en_passant(new_board);
+//                        board.en_passant = false;
 
                 //      CASTLING
                         if ((piece == 'k' and ox == 4 and (nx == 2 or nx == 6))
@@ -438,6 +439,16 @@ namespace piecemove {
 
                         if (board(x - 1, y - 1) > 0 and is_square_valid(board, x - 1, y - 1)) {
                                 add_move(board, moves, x, y, x - 1, y - 1);
+                        }
+
+                        if (board.en_passant_black and board.current_move == make_pair(x+1, y)) {
+                                board.en_passant = true;
+                                add_move(board, moves, x, y, x+1, y-1);
+                        }
+
+                        if (board.en_passant_black and board.current_move == make_pair(x-1, y)) {
+                                board.en_passant = true;
+                                add_move(board, moves, x, y, x-1, y-1);
                         }
 
                         return moves;
