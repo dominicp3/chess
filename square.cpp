@@ -42,9 +42,9 @@ Square::Square(bool white, char piece, bool dot):
 void Square::render(QPainter* paint, QRect rect)
 {
         if (white) {
-                paint->fillRect(rect, Qt::white);
+//                paint->fillRect(rect, Qt::white);
         } else {
-                paint->fillRect(rect, Qt::darkGreen);
+//                paint->fillRect(rect, Qt::darkGreen);
         }
 
         if (piece_icon.isValid()) {

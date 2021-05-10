@@ -15,10 +15,15 @@ public:
         int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
         QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-        QModelIndex parent(const QModelIndex &index) const override;
+        QModelIndex parent(const QModelIndex& index) const override;
+        Qt::ItemFlags flags(const QModelIndex& index) const override;
+        Qt::DropActions supportedDropActions() const override;
 
         void set_dots(std::vector<std::unique_ptr<GameState>>& states);
         void clear_dots();
+
+        void drop_square(int x, int y);
+        void select_square(int x, int y);
 
         bool is_white(char p);
 

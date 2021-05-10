@@ -12,16 +12,19 @@ BoardModel::BoardModel(QObject* parent, GameState gamestate):
 
 int BoardModel::columnCount(const QModelIndex& parent) const
 {
+        Q_UNUSED(parent);
         return 8;
 }
 
 int BoardModel::rowCount(const QModelIndex& parent) const
 {
+        Q_UNUSED(parent);
         return 8;
 }
 
 QVariant BoardModel::data(const QModelIndex& index, int role) const
 {
+        Q_UNUSED(role);
         QVariant v;
         v.setValue(squares[index.column()][7-index.row()]);
         return v;
@@ -29,12 +32,30 @@ QVariant BoardModel::data(const QModelIndex& index, int role) const
 
 QModelIndex BoardModel::index(int row, int column, const QModelIndex& parent) const
 {
+        Q_UNUSED(parent);
         return createIndex(row, column, squares[column][7-row]);
 }
 
 QModelIndex BoardModel::parent(const QModelIndex& index) const
 {
+        Q_UNUSED(index);
         return QModelIndex();
+}
+
+Qt::ItemFlags BoardModel::flags(const QModelIndex& index) const
+{
+        Qt::ItemFlags default_flags = QAbstractTableModel::flags(index);
+
+        if (index.isValid()) {
+                return Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | default_flags;
+        }
+
+        return Qt::ItemIsDropEnabled | default_flags;
+}
+
+Qt::DropActions BoardModel::supportedDropActions() const
+{
+        return Qt::MoveAction | Qt::CopyAction;
 }
 
 void BoardModel::set_dots(std::vector<std::unique_ptr<GameState>>& states)
@@ -54,18 +75,22 @@ void BoardModel::clear_dots()
                         }
                 }
         }
+
+        emit this->dataChanged(QModelIndex(), QModelIndex());
 }
 
-bool BoardModel::is_white(char p)
+void BoardModel::drop_square(int x, int y)
 {
-        return (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k');
+        if ((*gamestate)(x, y) == 0) {
+                select_square(x, y);
+                return;
+        }
+
+        clear_dots();
 }
 
-void BoardModel::cell_click(const QModelIndex& index)
+void BoardModel::select_square(int x, int y)
 {
-        int x = index.column();
-        int y = 7 - index.row();
-
         if (x < 0 or x >= 8 or y < 0 or y >= 8) {
                 return;
         }
@@ -85,12 +110,22 @@ void BoardModel::cell_click(const QModelIndex& index)
                         gamestate = move(state);
                         set_squares(gamestate);
                         emit player_change();
+                        emit this->dataChanged(QModelIndex(), QModelIndex());
                         break;
                 }
         }
 
-        emit this->dataChanged(QModelIndex(), QModelIndex());
         potential_states.clear();
+}
+
+bool BoardModel::is_white(char p)
+{
+        return (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k');
+}
+
+void BoardModel::cell_click(const QModelIndex& index)
+{
+        select_square(index.column(), 7 - index.row());
 }
 
 void BoardModel::set_squares(unique_ptr<GameState>& gamestate)

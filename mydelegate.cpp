@@ -15,5 +15,5 @@ void MyDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, co
 
 QSize MyDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-        // TODO
+        return QSize(60, 60);
 }

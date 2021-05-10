@@ -16,6 +16,7 @@ SOURCES += \
     indicator.cpp \
     main.cpp \
     mydelegate.cpp \
+    mytableview.cpp \
     piecemove.cpp \
     square.cpp
 
@@ -27,6 +28,7 @@ HEADERS += \
     hash.h \
     indicator.h \
     mydelegate.h \
+    mytableview.h \
     piecemove.h \
     square.h
 

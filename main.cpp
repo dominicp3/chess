@@ -12,7 +12,6 @@ int main(int argc, char* argv[])
         a.setPalette(pal);
 
         Dialog w;
-        w.show();
 
         return a.exec();
 }
