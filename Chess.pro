@@ -2,6 +2,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets svg
 
+INCLUDEPATH += include/
+
 CONFIG += c++14
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -9,28 +11,30 @@ CONFIG += c++14
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    boardmodel.cpp \
-    dialog.cpp \
-    engine.cpp \
-    gamestate.cpp \
-    indicator.cpp \
-    main.cpp \
-    mydelegate.cpp \
-    mytableview.cpp \
-    piecemove.cpp \
-    square.cpp
+    src/gui/boardframe.cpp \
+    src/gui/boardmodel.cpp \
+    src/gui/dialog.cpp \
+    src/gui/indicator.cpp \
+    src/gui/mydelegate.cpp \
+    src/gui/mytableview.cpp \
+    src/gui/pieceicon.cpp \
+    src/game/engine.cpp \
+    src/game/gamestate.cpp \
+    src/game/piecemove.cpp \
+    src/main.cpp
 
 HEADERS += \
-    boardmodel.h \
-    dialog.h \
-    engine.h \
-    gamestate.h \
-    hash.h \
-    indicator.h \
-    mydelegate.h \
-    mytableview.h \
-    piecemove.h \
-    square.h
+    include/gui/boardframe.h \
+    include/gui/boardmodel.h \
+    include/gui/dialog.h \
+    include/gui/indicator.h \
+    include/gui/mydelegate.h \
+    include/gui/mytableview.h \
+    include/gui/pieceicon.h \
+    include/game/engine.h \
+    include/game/gamestate.h \
+    include/game/piecemove.h \
+    include/hash.h
 
 FORMS +=
 
