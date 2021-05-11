@@ -11,15 +11,15 @@ class BoardFrame : public QFrame
         Q_OBJECT
 public:
         explicit BoardFrame(QWidget *parent = nullptr);
+        MyTableView*& get_tableview();
 
-        BoardModel* get_boardmodel();
+protected:
         void paintEvent(QPaintEvent* event) override;
 
 private:
-        BoardModel* boardmodel;
-        MyTableView* tableview;
-        QSvgRenderer board;
         QHBoxLayout* hboxlayout;
+        MyTableView* tableview;
+        QSvgRenderer board_image;
 };
 
 #endif // BOARDFRAME_H

@@ -1,5 +1,4 @@
 #include "gui/dialog.h"
-#include "gui/boardmodel.h"
 
 int main(int argc, char* argv[])
 {

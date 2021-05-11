@@ -14,7 +14,7 @@ SOURCES += \
     src/gui/boardframe.cpp \
     src/gui/boardmodel.cpp \
     src/gui/dialog.cpp \
-    src/gui/indicator.cpp \
+    src/gui/indicatorframe.cpp \
     src/gui/mydelegate.cpp \
     src/gui/mytableview.cpp \
     src/gui/pieceicon.cpp \
@@ -27,7 +27,7 @@ HEADERS += \
     include/gui/boardframe.h \
     include/gui/boardmodel.h \
     include/gui/dialog.h \
-    include/gui/indicator.h \
+    include/gui/indicatorframe.h \
     include/gui/mydelegate.h \
     include/gui/mytableview.h \
     include/gui/pieceicon.h \

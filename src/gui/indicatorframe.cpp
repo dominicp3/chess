@@ -1,15 +1,15 @@
-#include "gui/indicator.h"
+#include "gui/indicatorframe.h"
 
 using namespace std;
 
-Indicator::Indicator(QWidget* parent):
+IndicatorFrame::IndicatorFrame(QWidget* parent):
         QWidget(parent)
 {
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
         setFixedWidth(BORDER);
 }
 
-void Indicator::paintEvent(QPaintEvent* event)
+void IndicatorFrame::paintEvent(QPaintEvent* event)
 {
         Q_UNUSED(event);
         QPainter painter(this);
@@ -19,7 +19,7 @@ void Indicator::paintEvent(QPaintEvent* event)
 }
 
 
-void Indicator::switch_player()
+void IndicatorFrame::switch_player()
 {
         top = not top;
         update();

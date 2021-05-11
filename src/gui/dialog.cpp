@@ -5,22 +5,20 @@ using namespace std;
 Dialog::Dialog(QWidget* parent):
         QDialog(parent),
         hboxlayout(new QHBoxLayout(this)),
-        boardwidget(new BoardFrame(this)),
-        player_indicator(new Indicator(this))
+        boardframe(new BoardFrame(this)),
+        player_indicator(new IndicatorFrame(this))
 {
-        connect(boardwidget->get_boardmodel(), SIGNAL(player_change()), player_indicator, SLOT(switch_player()));
-        QScreen* screen = QGuiApplication::primaryScreen();
-        QRect mm = screen->availableGeometry() ;
-        int size = mm.width() / 3.5;
+        connect(boardframe->get_tableview()->model(), SIGNAL(player_change()), player_indicator, SLOT(switch_player()));
 
-        resize(size, size);
+        int window_size = QGuiApplication::primaryScreen()->availableGeometry().width() / 3.5;
+        resize(window_size, window_size);
 
         hboxlayout->setSpacing(0);
         hboxlayout->setContentsMargins(BORDER, BORDER, 0, BORDER);
-        hboxlayout->addWidget(boardwidget);
+        hboxlayout->addWidget(boardframe);
         hboxlayout->addWidget(player_indicator);
 
-        setMinimumSize(size, size);
+        setMinimumSize(window_size, window_size);
 
         setLayout(hboxlayout);
         show();

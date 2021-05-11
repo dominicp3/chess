@@ -6,12 +6,13 @@
 
 static constexpr int BORDER = 22;
 
-class Indicator : public QWidget
+class IndicatorFrame : public QWidget
 {
         Q_OBJECT
 public:
-        explicit Indicator(QWidget *parent = nullptr);
+        explicit IndicatorFrame(QWidget *parent = nullptr);
 
+protected:
         void paintEvent(QPaintEvent* event) override;
 
 public slots:

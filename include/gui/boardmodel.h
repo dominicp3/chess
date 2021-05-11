@@ -11,6 +11,11 @@ class BoardModel : public QAbstractTableModel
         Q_OBJECT
 public:
         explicit BoardModel(QObject *parent, GameState gamestate);
+
+        void select_square(int x, int y);
+        void show_pieces();
+        void hide_piece(int x, int y);
+
         int columnCount(const QModelIndex &parent = QModelIndex()) const override;
         int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -19,24 +24,17 @@ public:
         Qt::ItemFlags flags(const QModelIndex& index) const override;
         Qt::DropActions supportedDropActions() const override;
 
-        void set_dots(std::vector<std::unique_ptr<GameState>>& states);
-        void clear_dots();
-
-        void drop_square(int x, int y);
-        void select_square(int x, int y);
-
-        bool is_white(char p);
-
-        void set_show_piece(int x, int y, bool show);
-
 signals:
         void player_change();
 
-private slots:
+public slots:
         void cell_click(const QModelIndex& index);
 
 private:
+        bool is_white(char p);
+        void clear_dots();
         void set_squares(std::unique_ptr<GameState>& gamestate);
+        void set_dots(std::vector<std::unique_ptr<GameState>>& states);
 
         std::unique_ptr<GameState> gamestate;
         std::vector<std::unique_ptr<GameState>> potential_states;

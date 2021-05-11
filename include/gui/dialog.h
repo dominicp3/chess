@@ -12,7 +12,7 @@
 #include "mydelegate.h"
 #include "mytableview.h"
 #include "boardmodel.h"
-#include "indicator.h"
+#include "indicatorframe.h"
 #include "boardframe.h"
 
 class Dialog : public QDialog
@@ -24,7 +24,8 @@ public:
 
 private:
         QHBoxLayout* hboxlayout;
-        BoardFrame* boardwidget;
-        Indicator* player_indicator;
+
+        BoardFrame* boardframe;
+        IndicatorFrame* player_indicator;
 };
 #endif // DIALOG_H
