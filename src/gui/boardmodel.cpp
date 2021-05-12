@@ -44,7 +44,6 @@ void BoardModel::select_square(int x, int y)
 
         if (square_selected) {
                 execute_move(x, y);
-
         } else {
                 possible_moves(x, y);
         }
