@@ -1,17 +1,17 @@
-#include "gui/dialog.h"
+#include "gui/game.h"
 
 using namespace std;
 
-Dialog::Dialog(QWidget* parent):
+Game::Game(QWidget* parent, GameState gamestate):
         QDialog(parent),
         hboxlayout(new QHBoxLayout(this)),
-        boardframe(new BoardFrame(this)),
-        indicatorframe(new IndicatorFrame(this))
+        boardframe(new BoardFrame(this, gamestate)),
+        indicatorframe(new IndicatorFrame(this, not gamestate.white_to_move))
 {
         connect(boardframe->get_tableview()->model(), SIGNAL(player_change()), indicatorframe, SLOT(switch_player()));
 
         int window_size = QGuiApplication::primaryScreen()->availableGeometry().width() / 3.5;
-        resize(window_size, window_size);
+        setFixedSize(window_size, window_size);
 
         hboxlayout->setSpacing(0);
         hboxlayout->setContentsMargins(BORDER, BORDER, 0, BORDER);

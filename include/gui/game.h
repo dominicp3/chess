@@ -6,13 +6,14 @@
 #include <QApplication>
 #include "indicatorframe.h"
 #include "boardframe.h"
+#include "game/gamestate.h"
 
-class Dialog : public QDialog
+class Game : public QDialog
 {
         Q_OBJECT
 
 public:
-        explicit Dialog(QWidget *parent = nullptr);
+        explicit Game(QWidget *parent, GameState gamestate);
 
 private:
         QHBoxLayout* hboxlayout;

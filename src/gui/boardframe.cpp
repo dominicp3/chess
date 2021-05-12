@@ -2,13 +2,33 @@
 
 using namespace std;
 
-BoardFrame::BoardFrame(QWidget *parent):
+BoardFrame::BoardFrame(QWidget *parent, GameState& gamestate):
         QFrame(parent),
         hboxlayout(new QHBoxLayout(this)),
-        tableview(new MyTableView(this, new BoardModel(this, GameState())))
+        tableview(new QTableView(this))
 {
+        BoardModel* boardmodel = new BoardModel(this, gamestate);
+        connect(tableview, SIGNAL(pressed(QModelIndex)), boardmodel, SLOT(cell_click(QModelIndex)));
+
+        tableview->setModel(boardmodel);
+
+        tableview->setShowGrid(false);
+        tableview->setFrameShape(QFrame::NoFrame);
+
+        tableview->setModel(boardmodel);
+        tableview->setItemDelegate(new MyDelegate(this));
+
+        tableview->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        tableview->horizontalHeader()->hide();
+
+        tableview->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        tableview->verticalHeader()->hide();
+
+        tableview->setDragDropMode(QAbstractItemView::InternalMove);
+
+
         setFrameShape(QFrame::NoFrame);
-        board_image.load(QString("images/board/svg/brown.svg"));
+        board_image.load(QString("images/board/svg/green.svg"));
 
         setStyleSheet("QTableView {background-color: transparent;}");
 
@@ -27,7 +47,7 @@ void BoardFrame::paintEvent(QPaintEvent* event)
         board_image.render(&painter);
 }
 
-MyTableView*& BoardFrame::get_tableview()
+QTableView*& BoardFrame::get_tableview()
 {
         return tableview;
 }

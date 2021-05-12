@@ -393,7 +393,6 @@ namespace piecemove {
                         board.en_passant_black = false;
 
                         if (!board(x, y + 1)) {
-
                                 add_move(board, moves, x, y, x, y + 1);
                         }
 

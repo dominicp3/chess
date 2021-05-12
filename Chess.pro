@@ -13,10 +13,9 @@ CONFIG += c++14
 SOURCES += \
     src/gui/boardframe.cpp \
     src/gui/boardmodel.cpp \
-    src/gui/dialog.cpp \
+    src/gui/game.cpp \
     src/gui/indicatorframe.cpp \
     src/gui/mydelegate.cpp \
-    src/gui/mytableview.cpp \
     src/game/engine.cpp \
     src/game/gamestate.cpp \
     src/game/piecemove.cpp \
@@ -26,10 +25,9 @@ SOURCES += \
 HEADERS += \
     include/gui/boardframe.h \
     include/gui/boardmodel.h \
-    include/gui/dialog.h \
+    include/gui/game.h \
     include/gui/indicatorframe.h \
     include/gui/mydelegate.h \
-    include/gui/mytableview.h \
     include/game/engine.h \
     include/game/gamestate.h \
     include/game/piecemove.h \

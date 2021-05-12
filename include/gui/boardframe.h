@@ -3,23 +3,23 @@
 
 #include <QHBoxLayout>
 #include <QPaintEvent>
+#include <QHeaderView>
 #include "game/gamestate.h"
 #include "gui/boardmodel.h"
-#include "gui/mytableview.h"
+#include "gui/mydelegate.h"
 
 class BoardFrame : public QFrame
 {
         Q_OBJECT
 public:
-        explicit BoardFrame(QWidget *parent = nullptr);
-        MyTableView*& get_tableview();
-
+        explicit BoardFrame(QWidget *parent, GameState& gamestate);
+        QTableView*& get_tableview();
 protected:
         void paintEvent(QPaintEvent* event) override;
 
 private:
         QHBoxLayout* hboxlayout;
-        MyTableView* tableview;
+        QTableView* tableview;
         QSvgRenderer board_image;
 };
 

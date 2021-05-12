@@ -10,7 +10,7 @@ class IndicatorFrame : public QWidget
 {
         Q_OBJECT
 public:
-        explicit IndicatorFrame(QWidget *parent = nullptr);
+        explicit IndicatorFrame(QWidget *parent = nullptr, bool top = false);
 
 protected:
         void paintEvent(QPaintEvent* event) override;
@@ -19,7 +19,7 @@ public slots:
         void switch_player();
 
 private:
-        bool top = false;
+        bool top;
 
 };
 

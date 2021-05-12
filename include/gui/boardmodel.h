@@ -10,7 +10,7 @@ class BoardModel : public QAbstractTableModel
 {
         Q_OBJECT
 public:
-        explicit BoardModel(QObject *parent, GameState gamestate);
+        explicit BoardModel(QObject *parent, GameState& gamestate);
 
         void select_square(int x, int y);
 

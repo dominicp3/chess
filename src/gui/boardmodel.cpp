@@ -3,7 +3,7 @@
 
 using namespace std;
 
-BoardModel::BoardModel(QObject* parent, GameState gamestate):
+BoardModel::BoardModel(QObject* parent, GameState& gamestate):
         QAbstractTableModel(parent),
         current_state(make_unique<GameState>(gamestate))
 {

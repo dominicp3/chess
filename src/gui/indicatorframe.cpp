@@ -2,8 +2,9 @@
 
 using namespace std;
 
-IndicatorFrame::IndicatorFrame(QWidget* parent):
-        QWidget(parent)
+IndicatorFrame::IndicatorFrame(QWidget* parent, bool top):
+        QWidget(parent),
+        top(top)
 {
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
         setFixedWidth(BORDER);
