@@ -5,7 +5,7 @@ using namespace std;
 Square::Square(char piece, bool dot):
         dot(dot)
 {
-        QString path = "images/pieces/cardinal";
+        QString path = "images/pieces/fantasy";
 
         switch (piece) {
         case 'p': piece_icon.load(path + "/wP.svg");

@@ -699,6 +699,10 @@ namespace piecemove {
         {
                 char piece = board(x, y);
 
+                if (board.white_to_move != is_white(piece)) {
+                        return {};
+                }
+
                 if (piece == 'p') {
                         return pawn_w(board, x, y);
                 }
