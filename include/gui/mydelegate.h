@@ -2,7 +2,7 @@
 #define MYDELEGATE_H
 
 #include <QAbstractItemDelegate>
-#include "pieceicon.h"
+#include "square.h"
 
 class MyDelegate : public QAbstractItemDelegate
 {

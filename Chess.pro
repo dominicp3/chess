@@ -17,10 +17,10 @@ SOURCES += \
     src/gui/indicatorframe.cpp \
     src/gui/mydelegate.cpp \
     src/gui/mytableview.cpp \
-    src/gui/pieceicon.cpp \
     src/game/engine.cpp \
     src/game/gamestate.cpp \
     src/game/piecemove.cpp \
+    src/gui/square.cpp \
     src/main.cpp
 
 HEADERS += \
@@ -30,10 +30,10 @@ HEADERS += \
     include/gui/indicatorframe.h \
     include/gui/mydelegate.h \
     include/gui/mytableview.h \
-    include/gui/pieceicon.h \
     include/game/engine.h \
     include/game/gamestate.h \
     include/game/piecemove.h \
+    include/gui/square.h \
     include/hash.h
 
 FORMS +=

@@ -1,10 +1,9 @@
-#include "gui/pieceicon.h"
+#include "gui/square.h"
 
 using namespace std;
 
-PieceIcon::PieceIcon(char piece, bool dot):
-        dot(dot),
-        piece(piece)
+Square::Square(char piece, bool dot):
+        dot(dot)
 {
         QString path = "images/pieces/cardinal";
 
@@ -40,7 +39,7 @@ PieceIcon::PieceIcon(char piece, bool dot):
         setAspectRatioMode(Qt::KeepAspectRatio);
 }
 
-void PieceIcon::render(QPainter* painter, const QRectF& rect)
+void Square::render(QPainter* painter, const QRectF& rect)
 {
         if (piece_icon.isValid() and show) {
                 piece_icon.render(painter, rect);
@@ -52,17 +51,17 @@ void PieceIcon::render(QPainter* painter, const QRectF& rect)
         }
 }
 
-void PieceIcon::set_dot(bool d)
+void Square::set_dot(bool d)
 {
         dot = d;
 }
 
-bool PieceIcon::get_dot()
+bool Square::get_dot()
 {
         return dot;
 }
 
-void PieceIcon::set_show_piece(bool show)
+void Square::set_show_piece(bool show)
 {
         this->show = show;
 }

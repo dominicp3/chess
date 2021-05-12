@@ -1,14 +1,14 @@
 #ifndef PIECEICON_H
 #define PIECEICON_H
 
-#include <QSvgRenderer>
 #include <QPainter>
+#include <QSvgRenderer>
 
-class PieceIcon : public QSvgRenderer
+class Square : public QSvgRenderer
 {
         Q_OBJECT
 public:
-        PieceIcon(char piece, bool dot);
+        Square(char piece = 0, bool dot = false);
 
         void set_dot(bool d);
         bool get_dot();
@@ -20,7 +20,6 @@ public slots:
 private:
         QSvgRenderer piece_icon;
         bool dot = false;
-        char piece = 0;
         bool show = true;
 };
 

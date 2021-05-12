@@ -7,7 +7,7 @@ MyDelegate::MyDelegate(QObject *parent):
 
 void MyDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-        index.data().value<PieceIcon*>()->render(painter, option.rect);
+        index.data().value<Square*>()->render(painter, option.rect);
 }
 
 QSize MyDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const

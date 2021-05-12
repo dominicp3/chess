@@ -3,6 +3,8 @@
 int main(int argc, char* argv[])
 {
         QApplication a(argc, argv);
+        a.setStartDragDistance(0);
+        a.setStartDragTime(0);
 
         QPalette pal = a.palette();
         pal.setColor(QPalette::Window, Qt::black);

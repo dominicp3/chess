@@ -1,12 +1,13 @@
 #include "gui/boardmodel.h"
+#include <iostream>
 
 using namespace std;
 
 BoardModel::BoardModel(QObject* parent, GameState gamestate):
         QAbstractTableModel(parent),
-        gamestate(make_unique<GameState>(gamestate))
+        current_state(make_unique<GameState>(gamestate))
 {
-        set_squares(this->gamestate);
+        sync_squares();
 }
 
 int BoardModel::columnCount(const QModelIndex& parent) const
@@ -35,33 +36,63 @@ QModelIndex BoardModel::index(int row, int column, const QModelIndex& parent) co
         return createIndex(row, column, squares[column][7-row]);
 }
 
-QModelIndex BoardModel::parent(const QModelIndex& index) const
+void BoardModel::select_square(int x, int y)
 {
-        Q_UNUSED(index);
-        return QModelIndex();
-}
-
-Qt::ItemFlags BoardModel::flags(const QModelIndex& index) const
-{
-        Qt::ItemFlags default_flags = QAbstractTableModel::flags(index);
-
-        if (index.isValid()) {
-                return Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | default_flags;
+        if (x < 0 or x >= 8 or y < 0 or y >= 8) {
+                return;
         }
 
-        return Qt::ItemIsDropEnabled | default_flags;
+        if (square_selected) {
+                execute_move(x, y);
+
+        } else {
+                possible_moves(x, y);
+        }
+
+        emit this->dataChanged(QModelIndex(), QModelIndex());
 }
 
-Qt::DropActions BoardModel::supportedDropActions() const
+void BoardModel::cell_click(const QModelIndex& index)
 {
-        return Qt::MoveAction | Qt::CopyAction;
+        select_square(index.column(), 7-index.row());
 }
 
-void BoardModel::set_dots(std::vector<std::unique_ptr<GameState>>& states)
+void BoardModel::possible_moves(int x, int y)
 {
-        for (auto& state : states) {
-                pair<int, int> sq = state->current_move;
-                squares[sq.first][sq.second]->set_dot(true);
+        char p = (*current_state)(x, y);
+        bool white = (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k');
+        if (p > 0 and white == current_state->white_to_move) {
+                potential_states = piecemove::moves(*current_state, x, y);
+                for (auto& state : potential_states) {
+                        squares[state->current_move.first][state->current_move.second]->set_dot(true);
+                }
+                square_selected = true;
+        }
+}
+
+void BoardModel::execute_move(int x, int y)
+{
+        for (auto& state : potential_states) {
+                if (state->current_move == make_pair(x, y)) {
+                        current_state = move(state);
+                        sync_squares();
+                        potential_states.clear();
+                        emit player_change();
+                        break;
+                }
+        }
+
+        square_selected = false;
+        clear_dots();
+}
+
+void BoardModel::sync_squares()
+{
+        for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                        delete squares[x][y];
+                        squares[x][y] = new Square((*current_state)(x, y), false);
+                }
         }
 }
 
@@ -74,82 +105,4 @@ void BoardModel::clear_dots()
                         }
                 }
         }
-
-        emit this->dataChanged(QModelIndex(), QModelIndex());
-}
-
-void BoardModel::select_square(int x, int y)
-{
-        if (x < 0 or x >= 8 or y < 0 or y >= 8) {
-                return;
-        }
-
-        char p = (*gamestate)(x, y);
-        clear_dots();
-
-        if (p > 0 and is_white(p) == gamestate->white_to_move) {
-                potential_states = piecemove::moves(*gamestate, x, y);
-                set_dots(potential_states);
-                emit this->dataChanged(QModelIndex(), QModelIndex());
-                return;
-        }
-
-        for (auto& state : potential_states) {
-                if (make_pair(x, y) == state->current_move) {
-                        gamestate = move(state);
-                        set_squares(gamestate);
-                        emit player_change();
-                        emit this->dataChanged(QModelIndex(), QModelIndex());
-                        break;
-                }
-        }
-
-
-        potential_states.clear();
-}
-
-bool BoardModel::is_white(char p)
-{
-        return (p == 'p' or p == 'r' or p == 'n' or p == 'b' or p == 'q' or p == 'k');
-}
-
-void BoardModel::show_pieces()
-{
-        for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                        if (squares[x][y]) {
-                               squares[x][y]->set_show_piece(true);
-                        }
-                }
-        }
-
-        emit dataChanged(QModelIndex(), QModelIndex());
-}
-
-void BoardModel::hide_piece(int x, int y)
-{
-        if (squares[x][y]) {
-               squares[x][y]->set_show_piece(false);
-        }
-}
-
-void BoardModel::cell_click(const QModelIndex& index)
-{
-        select_square(index.column(), 7-index.row());
-}
-
-void BoardModel::set_squares(unique_ptr<GameState>& gamestate)
-{
-        bool white = false;
-
-        for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                        delete squares[x][y];
-                        squares[x][y] = new PieceIcon((*gamestate)(x, y), false);
-                        white = not white;
-                }
-
-                white = not white;
-        }
-
 }

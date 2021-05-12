@@ -2,6 +2,7 @@
 #define BOARDFRAME_H
 
 #include <QHBoxLayout>
+#include <QPaintEvent>
 #include "game/gamestate.h"
 #include "gui/boardmodel.h"
 #include "gui/mytableview.h"

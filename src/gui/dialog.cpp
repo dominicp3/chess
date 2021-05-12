@@ -6,9 +6,9 @@ Dialog::Dialog(QWidget* parent):
         QDialog(parent),
         hboxlayout(new QHBoxLayout(this)),
         boardframe(new BoardFrame(this)),
-        player_indicator(new IndicatorFrame(this))
+        indicatorframe(new IndicatorFrame(this))
 {
-        connect(boardframe->get_tableview()->model(), SIGNAL(player_change()), player_indicator, SLOT(switch_player()));
+        connect(boardframe->get_tableview()->model(), SIGNAL(player_change()), indicatorframe, SLOT(switch_player()));
 
         int window_size = QGuiApplication::primaryScreen()->availableGeometry().width() / 3.5;
         resize(window_size, window_size);
@@ -16,7 +16,7 @@ Dialog::Dialog(QWidget* parent):
         hboxlayout->setSpacing(0);
         hboxlayout->setContentsMargins(BORDER, BORDER, 0, BORDER);
         hboxlayout->addWidget(boardframe);
-        hboxlayout->addWidget(player_indicator);
+        hboxlayout->addWidget(indicatorframe);
 
         setMinimumSize(window_size, window_size);
 
