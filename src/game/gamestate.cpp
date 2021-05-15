@@ -2,6 +2,8 @@
 
 using namespace std;
 
+GameState::GameState() {}
+
 GameState::GameState(piece_map& pieces, bool player): white_to_move(player)
 {
         for (auto it = pieces.begin(); it != pieces.end(); it++) {

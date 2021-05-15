@@ -8,7 +8,7 @@ typedef std::unordered_map<std::pair<int, int>, char, pair_hash> piece_map;
 
 struct GameState
 {
-        GameState() {}
+        GameState();
         GameState(piece_map& pieces, bool player);
         char operator()(int x, int y);
         char operator()(std::pair<int, int> coord);
