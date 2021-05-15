@@ -1,5 +1,4 @@
 #include "gui/boardmodel.h"
-#include <iostream>
 
 using namespace std;
 
@@ -87,11 +86,14 @@ void BoardModel::execute_move(int x, int y)
 
 void BoardModel::sync_squares()
 {
+        bool white = false;
         for (int x = 0; x < 8; x++) {
                 for (int y = 0; y < 8; y++) {
                         delete squares[x][y];
-                        squares[x][y] = new Square((*current_state)(x, y), false);
+                        squares[x][y] = new Square((*current_state)(x, y), false, white);
+                        white = not white;
                 }
+                white = not white;
         }
 }
 

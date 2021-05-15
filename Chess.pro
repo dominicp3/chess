@@ -11,7 +11,6 @@ CONFIG += c++14
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src/gui/boardframe.cpp \
     src/gui/boardmodel.cpp \
     src/gui/game.cpp \
     src/gui/indicatorframe.cpp \
@@ -23,7 +22,6 @@ SOURCES += \
     src/main.cpp
 
 HEADERS += \
-    include/gui/boardframe.h \
     include/gui/boardmodel.h \
     include/gui/game.h \
     include/gui/indicatorframe.h \

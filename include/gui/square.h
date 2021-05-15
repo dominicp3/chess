@@ -8,7 +8,7 @@ class Square : public QSvgRenderer
 {
         Q_OBJECT
 public:
-        Square(char piece = 0, bool dot = false);
+        Square(char piece = 0, bool dot = false, bool white = false);
 
         void set_dot(bool d);
         bool get_dot();
@@ -21,6 +21,7 @@ private:
         QSvgRenderer piece_icon;
         bool dot = false;
         bool show = true;
+        bool white = false;
 };
 
 #endif // PIECEICON_H

@@ -2,8 +2,9 @@
 
 using namespace std;
 
-Square::Square(char piece, bool dot):
-        dot(dot)
+Square::Square(char piece, bool dot, bool white):
+        dot(dot),
+        white(white)
 {
         QString path = "images/pieces/fantasy";
 
@@ -41,6 +42,14 @@ Square::Square(char piece, bool dot):
 
 void Square::render(QPainter* painter, const QRectF& rect)
 {
+        if (white) {
+                painter->setBrush(Qt::white);
+        } else {
+                painter->setBrush(Qt::darkGreen);
+        }
+
+        painter->fillRect(rect, painter->brush());
+
         if (piece_icon.isValid() and show) {
                 piece_icon.render(painter, rect);
         }
